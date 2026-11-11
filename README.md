@@ -1,8 +1,8 @@
 # DEL Generator — Data Element Listing
 
-![Tests: 79 passing](https://img.shields.io/badge/tests-79%20passing-brightgreen)
+![Tests: 102 passing](https://img.shields.io/badge/tests-102%20passing-brightgreen)
 ![Unit tests: 70 passing](https://img.shields.io/badge/unit%20tests-70%20passing-brightgreen)
-![Browser tests: 9 passing](https://img.shields.io/badge/browser%20tests-9%20passing-brightgreen)
+![Browser tests: 32 passing](https://img.shields.io/badge/browser%20tests-32%20passing-brightgreen)
 ![DOCX checks: passing](https://img.shields.io/badge/docx%20checks-passing-brightgreen)
 ![Network calls: 0](https://img.shields.io/badge/network%20calls-0-brightgreen)
 ![Version: v0.1.0](https://img.shields.io/badge/version-v0.1.0-blue)
@@ -19,7 +19,7 @@ A filled DEL Word document: `DEL_<case>.docx`. 3 tables: header (11×2), sources
 
 ## How to use
 
-Open `del-generator.html` in a browser, straight from disk (`file://`). No server. No install. No data leaves the page. One HTML file.
+Open `del-generator.html` in a browser, straight from disk (`file://`). No server. No install. No data leaves the page. One HTML file. Theme toggle in the header: dark or light.
 
 1. **Download prompt** — scraper prompt for the LLM.
 2. **Upload JSON** — JSON from the LLM, or flat JSON, or an OCR payload. Partial JSON fills only missing fields.
@@ -47,13 +47,14 @@ Demo case: synthetic. Riverbend Manufacturing Pension Plan, Plan No. 001, case 9
 | `scripts/gen_demo_docx.cjs` | Generates the demo .docx through the HTML's own code. |
 | `scripts/verify_docx.py` | Checks the generated .docx with python-docx. |
 | `tests/run.cjs` | Unit tests (70). |
-| `tests/browser.cjs` | Browser tests (9, jsdom). |
+| `tests/browser.cjs` | Browser tests (32, jsdom). |
 | `package.json` | Test command (`npm test`), jsdom dev dependency. |
+| `assets/logos/` | Source PNGs + MANIFEST.md. Embedded in the HTML as data URIs. |
 | `OPEN_ITEMS.md` | Gap list. Read it before next steps. |
 
 ## Design system
 
-PBGC Design System **v1.1.0 DRAFT** (not approved). Tokens from `ErChulo/pbgc-design-system`, commit `84a7149d112ef26fcf1e5656b017b9e54f863cb2` (2026-11-08), blob SHA `49e4c3c9e2a41bbe50bea204ea71a7d427843ac2` (byte-identical). Brand blue #002D72. Helvetica Neue/Arial. WCAG 2.2 AA. No dark theme. Design-system repo not modified.
+PBGC Design System **v1.1.0 DRAFT** (not approved). Tokens from `ErChulo/pbgc-design-system`, commit `84a7149d112ef26fcf1e5656b017b9e54f863cb2` (2026-11-08), blob SHA `49e4c3c9e2a41bbe50bea204ea71a7d427843ac2` (byte-identical). Brand blue #002D72. Helvetica Neue/Arial. WCAG 2.2 AA. Dark theme: toggle in the header. Dark background #000. Logos: official PBGC logos. Full color on light, white on dark. Design-system repo not modified.
 
 ## Tests
 
@@ -65,11 +66,13 @@ python3 scripts/build_single_file.py  # re-inject prompt, run safety checks
 
 ## Verified — v0.1.0
 
-- `npm test`: **79 passed, 0 failed** (70 unit + 9 browser).
+- `npm test`: **102 passed, 0 failed** (70 unit + 32 browser).
 - `node --check` on the HTML script: passes.
 - `python3 scripts/verify_docx.py`: all checks pass. 3 tables (header 11×2, sources 6×3, elements 58×7). Header filled. No placeholder text.
 - Grep: 0 `fetch(`, 0 `<script src`, 0 `<link>`, 0 `import(`, no external URLs. Only `http://` strings: OOXML namespace URIs in the .docx builder — identifiers, not fetches.
 - Browser test: page loads in jsdom on an opaque origin (file: URL). Demo button loads the demo case, moves to Review.
+- Theme toggle: flips data-theme, dark page #000, header stays brand blue, choice persists.
+- Logos: two embedded PNGs, switch with theme, alt text set, 120px wide.
 
 ## Not verified
 

@@ -27,8 +27,46 @@ source of truth). Fetched 2026-11-11.
 - 8-point grid. Container max 1400px (token value — the ranking table
   is wide; R5 used 1000px, DEL follows the token).
 - CSS transitions only 150 / 250ms. WCAG target 2.2 AA.
-- **No dark theme shipped** (v1.1.0 dark theme is provisional — must
-  not ship without COLA approval).
+
+## Dark theme (toggle in the header)
+
+- Toggle button in the header: ☾ Dark / ☀ Light. Sets
+  `data-theme="dark"` on `<html>`. Choice saved in localStorage
+  (`del-theme`); no saved choice means light. Blocked storage never
+  kills the app (all access through `delSafeStorage()`).
+- Page background **#000** — user override of the provisional night-0
+  `#0B1B36`. All other dark values follow the resolved provisional
+  tokens: subtle bg night-1 `#12294D`; text `#F2F2F2` / muted `#D2D2D2`;
+  link blue-1 `#BEC6DF`; borders night-2 `#1B3866`, input blue-2
+  `#8B9FC7`; primary bg blue-1 / fg brand blue; secondary bg night-0;
+  danger `#FFB3BD` / `#4D000B`; focus ring white; status accents
+  green-2 `#B8D3A7`, warning `#FFD27A`, error `#FFB3BD`.
+- Header stays brand blue `#002D72` in both themes.
+- **Dark theme is provisional. COLA approval pending.** Do not treat
+  as approved.
+
+## Logos
+
+- Official PBGC logos, from Drive folder `images` (folder ID
+  `1bQZ0rt6VtbS6vLAlOe2cvt-MxjlPRDML`). Full record:
+  `assets/logos/MANIFEST.md`.
+- `PBGC_logo_name_hor_fc.png` (Drive ID
+  `1Eap0QZJGTMXPJWazlNmgfwhlYidyfDYd`, 13,609 bytes, 750×250) —
+  full color, light theme.
+- `PBGC_logo_name_hor_wt.png` (Drive ID
+  `1IzmMiz_4Dn9T3gLGd3VSaTKn6d0vvq3H`, 11,712 bytes, 751×251) —
+  white, dark theme.
+- Both embedded in `del-generator.html` as base64 data URIs
+  (single-file constraint). The PNG files are local source copies only.
+- Logos sit on the page background at the top of the main content, not
+  in the blue topbar. Full color on white, white on `#000`. They switch
+  with the theme (CSS, `data-theme`). Alt text: "Pension Benefit
+  Guaranty Corporation". Shown 120px wide (40px high, 3:1), above the
+  60px minimum. Clear space around them.
+- Full-color text is dark blue (RGB 30, 55, 109) — unreadable directly
+  on the blue topbar. That is why the logo sits on the page background.
+- Official artwork only. Never redrawn, recolored, outlined, or
+  approximated. No white box behind the full-color logo.
 
 ## Ambiguous-token choices (recorded, not decided unilaterally)
 
