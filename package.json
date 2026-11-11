@@ -1,0 +1,1 @@
+{"description":"DEL Generator — Data Element Listing filler. Single HTML file deliverable (del-generator.html).","devDependencies":{"jsdom":"^27.0.0"},"name":"del-generator","private":true,"scripts":{"test":"node tests/run.cjs && node tests/browser.cjs"},"version":"0.1.0"}

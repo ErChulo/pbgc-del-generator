@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEL Generator v0.1.0 — Data Element Listing</title>
+<style>
+/* PBGC Design System v1.1.0 DRAFT (tokens/tokens.json, commit 84a7149d, 2026-11-08). NOT approved. No dark theme. */
+:root{
+  --blue:#002D72; --red:#E4002B; --med-blue:#004B8D;
+  --ink:#1A1A1A; --gray-1:#58585B; --gray-2:#D2D2D2; --gray-3:#E0E0E0; --gray-4:#F2F2F2;
+  --error:#B3001B; --error-tint:#FDECEF; --warning:#8A5700; --warning-tint:#FFF4D6;
+  --success:#008065; --success-tint:#E6F2EF; --info-tint:#EAF0F8; --white:#FFFFFF;
+  --font:"Helvetica Neue",Arial,sans-serif; --mono:Consolas,"Courier New",monospace;
+  --radius:4px;
+}
+*{box-sizing:border-box}
+body{font-family:var(--font);color:var(--ink);background:var(--white);margin:0;line-height:1.5;font-size:1rem}
+.wrap{max-width:1400px;margin:0 auto;padding:0 1rem}
+h1{font-size:2.25rem;line-height:1.25;margin:0}
+h2{font-size:1.75rem;line-height:1.25;margin:0 0 .5rem}
+h3{font-size:1.375rem;line-height:1.25;margin:1rem 0 .5rem}
+p{margin:.5rem 0;max-width:60ch}
+.small{font-size:.875rem;color:var(--gray-1)}
+.topbar{background:var(--blue);color:var(--white);padding:1rem 0}
+.topbar h1{color:var(--white)}
+.topbar .tag{color:var(--white);margin:.25rem 0 0}
+.views{display:flex;gap:.5rem;margin-top:1rem}
+.tab{font-family:var(--font);font-size:1rem;min-height:44px;padding:.5rem 1rem;border:2px solid var(--blue);border-radius:var(--radius);background:var(--white);color:var(--blue);cursor:pointer}
+.tab.current{background:var(--blue);color:var(--white)}
+button{font-family:var(--font);font-size:1rem;min-height:44px;padding:.5rem 1rem;border-radius:var(--radius);cursor:pointer}
+button.primary{background:var(--blue);color:var(--white);border:2px solid var(--blue)}
+button.primary:hover{background:var(--med-blue);border-color:var(--med-blue)}
+button.secondary{background:var(--white);color:var(--blue);border:2px solid var(--blue)}
+button.secondary:hover{background:var(--gray-4)}
+button.danger{background:var(--error);color:var(--white);border:2px solid var(--error)}
+button:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--med-blue);outline-offset:2px}
+input,select,textarea{font-family:var(--font);font-size:1rem;color:var(--ink);border:1px solid var(--gray-1);border-radius:var(--radius);padding:.5rem;width:100%;margin:.25rem 0 .75rem}
+input[type=checkbox]{width:auto;min-height:24px;min-width:24px;margin:0 .25rem 0 0}
+label{display:block;font-weight:700;margin-top:.5rem}
+label .small{font-weight:400}
+.card{border:1px solid var(--gray-2);border-radius:var(--radius);padding:1rem;margin:1rem 0}
+.stepper{list-style:none;display:flex;gap:.5rem;padding:0;margin:1rem 0;flex-wrap:wrap}
+.stepper li{flex:1;min-width:140px;border:1px solid var(--gray-2);border-radius:var(--radius);padding:.5rem;cursor:pointer}
+.stepper li.current{border:2px solid var(--blue)}
+.stepper li.done{border-color:var(--success);background:var(--success-tint)}
+.stepper li.locked{opacity:.6;cursor:not-allowed}
+.stepper .n{font-weight:700}
+.alert{border:1px solid var(--error);background:var(--error-tint);border-radius:var(--radius);padding:.75rem;margin:.75rem 0}
+.warn{border:1px solid var(--warning);background:var(--warning-tint);border-radius:var(--radius);padding:.75rem;margin:.75rem 0}
+.info{border:1px solid var(--med-blue);background:var(--info-tint);border-radius:var(--radius);padding:.75rem;margin:.75rem 0}
+.ok{border:1px solid var(--success);background:var(--success-tint);border-radius:var(--radius);padding:.75rem;margin:.75rem 0}
+.badge{display:inline-block;border-radius:999px;padding:.1rem .6rem;font-size:.875rem;font-weight:700;white-space:nowrap}
+.badge.present{background:var(--success-tint);color:var(--success)}
+.badge.conditional{background:var(--warning-tint);color:var(--warning)}
+.badge.notApplicable{background:var(--gray-4);color:var(--gray-1)}
+.badge.missing{background:var(--error-tint);color:var(--error)}
+.badge.ambiguous{background:var(--warning-tint);color:var(--warning)}
+.badge.approved{background:var(--success-tint);color:var(--success)}
+.badge.rejected{background:var(--error-tint);color:var(--error)}
+.badge.edited{background:var(--info-tint);color:var(--med-blue)}
+table{border-collapse:collapse;width:100%;margin:.75rem 0}
+th,td{border:1px solid var(--gray-2);padding:.5rem;text-align:left;vertical-align:top;font-size:.875rem}
+th{background:var(--gray-4);font-weight:700}
+tr:nth-child(even) td{background:var(--gray-4)}
+.scorebar{display:block;height:10px;background:var(--gray-3);border-radius:var(--radius);margin-top:.25rem;min-width:80px}
+.scorebar i{display:block;height:10px;background:var(--success);border-radius:var(--radius)}
+.scorebar.low i{background:var(--error)}
+.scorebar.mid i{background:var(--warning)}
+.revrow{border:1px solid var(--gray-2);border-radius:var(--radius);padding:.75rem;margin:.75rem 0}
+.revrow .rowhead{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.revrow .field{font-family:var(--mono);font-weight:700}
+.revrow .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.5rem 1rem;margin-top:.5rem}
+.revrow .actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem}
+textarea{font-family:var(--mono);font-size:.875rem}
+footer{margin:2rem 0 1rem;border-top:1px solid var(--gray-2);padding-top:1rem}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="wrap"><h1>DEL Generator</h1><p class="tag">Data Element Listing · v0.1.0 · Single file — no server, no data leaves this page</p></div></header>
+<nav class="views wrap" aria-label="Views">
+  <button type="button" id="nav-del" class="tab current">DEL generator</button>
+  <button type="button" id="nav-matches" class="tab">Match ranking</button>
+</nav>
+<main class="wrap">
+<div id="view-del">
+  <section id="welcome" class="card">
+    <h2>Welcome</h2>
+    <p>This app writes the DEL — the Data Element Listing — from plan documents. It does not read the documents itself.</p>
+    <p><strong>How it works, in 5 steps:</strong> download the scraper prompt · feed the prompt and the documents to an LLM · upload the JSON the LLM returns · review each field · generate the Word document.</p>
+    <p class="small">The LLM proposes. The app checks. You decide. Nothing leaves this page — there is no server.</p>
+    <p><button type="button" class="primary" data-action="demo">Try the demo</button> <button type="button" data-action="hide-welcome">Hide this</button></p>
+  </section>
+  <ol id="stepper" class="stepper" aria-label="Steps"></ol>
+  <section id="step-0" class="step card"><div id="prompt-card"></div></section>
+  <section id="step-1" class="step card"><div id="upload-box"></div></section>
+  <section id="step-2" class="step card"><div id="review-box"></div></section>
+  <section id="step-3" class="step card"><div id="generate-box"></div></section>
+  <section id="step-4" class="step card"><div id="download-box"></div></section>
+  <section id="help" class="card">
+    <h2>Help</h2>
+    <h3>What is a DEL?</h3>
+    <p>A table of all the fields a PBGC case needs, and where each one comes from. It is a wish list — every field the plan could need, not only the ones in the census.</p>
+    <h3>What does the LLM do?</h3>
+    <p>It reads the plan documents and finds, for each field, whether the plan needs it, for which groups, and where the concept appears. It returns JSON. It never writes the Word document.</p>
+    <h3>What if the LLM is wrong?</h3>
+    <p>You review every field before anything is generated. A wrong value is never used — a missing or ambiguous one is shown to you instead.</p>
+    <h3>Where do the fields come from?</h3>
+    <p>The BCV Data Dictionary Complete: all Input fields (220 Input + 51 Input|Calculated). This version covers the template's 56. More groups come later.</p>
+    <h3>Glossary</h3>
+    <p><strong>DEL</strong> — Data Element Listing. <strong>DOPT</strong> — Date of Plan Termination. <strong>QDRO</strong> — Qualified Domestic Relations Order. <strong>ARD</strong> — Actual Retirement Date. <strong>PA_AMB</strong> — Prior Administrator's Accrued Monthly Benefit.</p>
+    <p><button type="button" data-action="show-welcome">Show the welcome again</button></p>
+  </section>
+</div>
+<div id="view-matches" hidden>
+  <section class="card">
+    <h2>Match ranking</h2>
+    <p>Each dictionary field, matched to the plan-document verbiage that means the same thing. The score compares the dictionary definition with the matched passage. Highest first.</p>
+    <p class="small">The score is a plain count of shared words and phrases — it ranks, it never decides. Check the low scores first. Fields with no match are listed on their own, never dropped.</p>
+    <p>
+      <button type="button" class="secondary" data-match-filter="all">All</button>
+      <button type="button" class="secondary" data-match-filter="low">Low score (under 50)</button>
+      <button type="button" class="secondary" data-match-filter="unmatched">No match</button>
+    </p>
+    <div id="matches-table"></div>
+  </section>
+</div>
+</main>
+<footer class="wrap small">
+  <p>DEL Generator v0.1.0 · PBGC Design System v1.1.0 DRAFT (not approved) · Single HTML file — open it from disk, no server, no data leaves this page.</p>
+  <p>Generated from approved DEL JSON. Deterministic generation; no LLM in the generation path. Every field above carries its source and citation.</p>
+</footer>
+<script>
+var DEL_VERSION = "0.1.0";
+
+/* The template's 56 data elements, in template order: [field, description, reasonRequired].
+   Descriptions and reasons are the template's own words (data-elements-list.docx, Table 2). */
+var DEL_FIELDS = [
+  ["RETSTAT","Participant Status at DOPT","Benefit Calculation"],
+  ["ID","Type of Record","Benefit Calculation"],
+  ["SSN","Participant's Social Security Number","Identification"],
+  ["DOB","Participant's Date of Birth","Age Calculation"],
+  ["FNAME","Participant's First Name","Identification"],
+  ["MNAME","Participant's Middle Name","Identification"],
+  ["LNAME","Participant's Last Name","Identification"],
+  ["DOD","Date of Death","Benefit Calculation"],
+  ["PSEX","Participant's Gender","Mortality"],
+  ["SSSN","Spouse's Social Security Number","Identification"],
+  ["SDOB","Spouse's Date of Birth","Age Calculation"],
+  ["SFNAME","Spouse's First Name","Identification"],
+  ["SMNAME","Spouse's Middle Name","Identification"],
+  ["SLNAME","Spouse's Last Name","Identification"],
+  ["SENAME","Spouse's Extra Name","Identification"],
+  ["SSEX","Spouse/Beneficiary's Gender","Mortality"],
+  ["SDOD","Date of Death","Benefit Calculation"],
+  ["NON_SPOUSE_BENF","Non-Spouse Joint Life Beneficiary Indicator (Y=Yes, N=No)","Benefit Calculation"],
+  ["BSSN","Non-Spouse Beneficiary's Social Security Number","Benefit Calculation"],
+  ["BLNAME","Non-Spouse Beneficiary's Last Name","Benefit Calculation"],
+  ["BFNAME","Non-Spouse Beneficiary's First Name","Benefit Calculation"],
+  ["BSEX","Non-Spouse Beneficiary's Gender (M=Male, F=Female, U=Unknown)","Benefit Calculation"],
+  ["BDOB","Non-Spouse Beneficiary's Date of Birth","Benefit Calculation"],
+  ["BDOD","Non-Spouse Beneficiary's Date of Death","Benefit Calculation"],
+  ["QDRO_INDICATOR","QDRO Indicator (Y=Yes, N=No)","QDRO Calculation"],
+  ["APSSN","Alternate Payee's Social Security Number","QDRO Calculation"],
+  ["APLNAME","Alternate Payee's Last Name","QDRO Calculation"],
+  ["APFNAME","Alternate Payee's First Name (do NOT include period for initial)","QDRO Calculation"],
+  ["APSEX","Alternate Payee's Gender (M=Male, F=Female, U=Unknown)","QDRO Calculation"],
+  ["APDOB","Alternate Payee's Date of Birth","QDRO Calculation"],
+  ["APDOD","Alternate Payee's Date of Death","QDRO Calculation"],
+  ["MSTAT","Participant's Marital Status at DOPT: M \u2013 Married, S \u2013 Single, W \u2013 Widowed, D \u2013 Divorced, U- Unknown","Joint & Survivor Calculation"],
+  ["DOH","Participant's Date of Hire","Service Calculation"],
+  ["DOTE","Date of Termination of Employment","Service Calculation"],
+  ["PA_AMB","Prior Administrator's Accrued Monthly Benefit","Benefit Verification"],
+  ["DOR","Participant's Actual Retirement Date","Benefit Calculation"],
+  ["SBCD","Spouse/Beneficiary's Benefit Commencement Date","Benefit Calculation"],
+  ["FORM_CODE_ARD","ARD Benefit Form","Benefit Form"],
+  ["SPC_ARD","Spouse/Beneficiary's Percent of Benefit Form","Benefit Form"],
+  ["MTHS_ARD","Months Certain in ARD Benefit Form","Benefit Form"],
+  ["LEV_MB_ARD","Level Life ARD Benefit in Pay Status","Benefit Verification"],
+  ["DOP","Date of Participation","Benefit Calculation"],
+  ["CSPA","Prior Administrator's Credited Service","Benefit Calculation"],
+  ["VPPA","Prior Administrator's Vesting Percentage","Benefit Calculation"],
+  ["VSPA","Prior Administrator's Vesting Service","Benefit Calculation"],
+  ["PHS","Health Status","Disability Status"],
+  ["QDRO_TYPE","QDRO Type (SH=Shared, SI=Separate Interest)","QDRO Calculation"],
+  ["AP_FIXED_AMT","QDRO Fixed Dollar Amount to Alternate Payee","QDRO Calculation"],
+  ["AP_PERCENT","QDRO Percentage to Alternate Payee (50% x marital fraction of 10/20 = 0.25)","QDRO Calculation"],
+  ["AMB_SPLIT_DATE","Accrued Monthly Benefit at QDRO Split Date","QDRO Calculation"],
+  ["ER_SUBSIDY_IND","Early Retirement Subsidy Indicator for Alternate Payee (Y=Yes, N=No)","QDRO Calculation"],
+  ["QDRO_SPLIT_DATE","QDRO Accrued Benefit Split Date","QDRO Calculation"],
+  ["QDRO_PROV_DATE","QDRO Final Provision Date (effective date of that provision before QDRO_SPLIT_DATE)","QDRO Calculation"],
+  ["T001","Is alternate payee surviving spouse for QPSA","QDRO Calculation"],
+  ["T002","Is alternate payee surviving spouse for QJSA","QDRO Calculation"],
+  ["AP_REQ_DOR","Alternate Payee ARD Required by QDRO","QDRO Calculation"]
+];
+var DEL_FIELD_MAP = {};
+DEL_FIELDS.forEach(function (f) { DEL_FIELD_MAP[f[0]] = { description: f[1], reasonRequired: f[2] }; });
+var DEL_GROUP_A = "Pay Status Retirees/ Beneficiaries";
+var DEL_GROUP_B = "Active/ Sep. Vested/ Non-Vested";
+
+/* Demo document keys -> full document names (citation.document uses the full name). */
+var DEL_DOC_NAMES = {
+  "D1": "Riverbend Manufacturing Pension Plan (restated 2020-01-01)",
+  "D2": "Riverbend Plan Amendment 2023-06-01",
+  "QDRO": "QDRO \u2014 synthetic (2024-03-15)",
+  "Census": "Census"
+};
+
+/* Demo rows: [field, status, reqA, reqB, primary, secondary, condition,
+   docKey, page, section, concept, passage, location, note]
+   1 = required for the group, 0 = not. null = none. */
+var DEMO_ROWS = [
+  ["RETSTAT","present",1,1,"Census","Plan document",null,"D1","12","3.2","Participant status at DOPT","Participant status at the Date of Plan Termination is Retired, Separated Vested, Active Vested, or Nonvested.","D1 \u00a73.2 p12",null],
+  ["ID","present",1,1,"Census","Plan document",null,"D1","4","2.1","Type of record","Type of Record is Participant, Beneficiary, or Alternate Payee.","D1 \u00a72.1 p4",null],
+  ["SSN","present",1,1,"Census",null,null,"Census",null,null,"Social Security Number","Participant's Social Security Number","Census",null],
+  ["DOB","present",1,1,"Census",null,null,"Census",null,null,"Date of birth","Participant's Date of Birth","Census",null],
+  ["FNAME","present",1,1,"Census",null,null,"Census",null,null,"First name","Participant's First Name","Census",null],
+  ["MNAME","present",1,1,"Census",null,null,"Census",null,null,"Middle name","Participant's Middle Name","Census",null],
+  ["LNAME","present",1,1,"Census",null,null,"Census",null,null,"Last name","Participant's Last Name","Census",null],
+  ["DOD","present",1,1,"Census","Plan document",null,"D1","18","5.1","Date of death","Date of Death means the date on which the Participant died.","D1 \u00a75.1 p18",null],
+  ["PSEX","present",1,1,"Census",null,null,"Census",null,null,"Gender","Participant's Gender","Census",null],
+  ["SSSN","conditional",1,1,"Census",null,"if married at DOPT","Census",null,null,"Spouse's Social Security Number","Spouse's Social Security Number","Census",null],
+  ["SDOB","conditional",1,1,"Census",null,"if married at DOPT","Census",null,null,"Spouse's date of birth","Spouse's Date of Birth","Census",null],
+  ["SFNAME","conditional",1,1,"Census",null,"if married at DOPT","Census",null,null,"Spouse's first name","Spouse's First Name","Census",null],
+  ["SMNAME","conditional",1,1,"Census",null,"if married at DOPT","Census",null,null,"Spouse's middle name","Spouse's Middle Name","Census",null],
+  ["SLNAME","conditional",1,1,"Census",null,"if married at DOPT","Census",null,null,"Spouse's last name","Spouse's Last Name","Census",null],
+  ["SENAME","conditional",1,1,"Census",null,"if married at DOPT","Census",null,null,"Spouse's extra name","Spouse's Extra Name","Census",null],
+  ["SSEX","conditional",1,1,"Census",null,"if married at DOPT","Census",null,null,"Spouse's gender","Spouse/Beneficiary's Gender","Census",null],
+  ["SDOD","conditional",1,1,"Census","Plan document","if married at DOPT","D1","18","5.1","Spouse's date of death","Date of Death of the Spouse.","D1 \u00a75.1 p18",null],
+  ["NON_SPOUSE_BENF","conditional",1,1,"Plan document",null,"if a non-spouse beneficiary is named","D1","19","5.4","Non-spouse joint life beneficiary","Non-Spouse Joint Life Beneficiary Indicator: yes or no.","D1 \u00a75.4 p19",null],
+  ["BSSN","conditional",1,1,"Census",null,"if a non-spouse beneficiary is named","Census",null,null,"Non-spouse beneficiary's SSN","Non-Spouse Beneficiary's Social Security Number","Census",null],
+  ["BLNAME","conditional",1,1,"Census",null,"if a non-spouse beneficiary is named","Census",null,null,"Non-spouse beneficiary's last name","Non-Spouse Beneficiary's Last Name","Census",null],
+  ["BFNAME","conditional",1,1,"Census",null,"if a non-spouse beneficiary is named","Census",null,null,"Non-spouse beneficiary's first name","Non-Spouse Beneficiary's First Name","Census",null],
+  ["BSEX","conditional",1,1,"Census",null,"if a non-spouse beneficiary is named","Census",null,null,"Non-spouse beneficiary's gender","Non-Spouse Beneficiary's Gender","Census",null],
+  ["BDOB","conditional",1,1,"Census",null,"if a non-spouse beneficiary is named","Census",null,null,"Non-spouse beneficiary's date of birth","Non-Spouse Beneficiary's Date of Birth","Census",null],
+  ["BDOD","conditional",1,1,"Census","Plan document","if a non-spouse beneficiary is named","D1","19","5.4","Non-spouse beneficiary's date of death","Date of Death of the Non-Spouse Beneficiary.","D1 \u00a75.4 p19",null],
+  ["QDRO_INDICATOR","conditional",1,1,"Plan document","QDRO","if a QDRO exists","D1","20","6.1","QDRO indicator","QDRO Indicator: yes or no.","D1 \u00a76.1 p20",null],
+  ["APSSN","conditional",1,1,"QDRO",null,"if a QDRO exists","QDRO","1","1","Alternate payee's SSN","Alternate Payee's Social Security Number","QDRO \u00a71 p1",null],
+  ["APLNAME","conditional",1,1,"QDRO",null,"if a QDRO exists","QDRO","1","1","Alternate payee's last name","Alternate Payee's Last Name","QDRO \u00a71 p1",null],
+  ["APFNAME","conditional",1,1,"QDRO",null,"if a QDRO exists","QDRO","1","1","Alternate payee's first name","Alternate Payee's First Name","QDRO \u00a71 p1",null],
+  ["APSEX","conditional",1,1,"QDRO",null,"if a QDRO exists","QDRO","1","1","Alternate payee's gender","Alternate Payee's Gender","QDRO \u00a71 p1",null],
+  ["APDOB","conditional",1,1,"QDRO",null,"if a QDRO exists","QDRO","1","1","Alternate payee's date of birth","Alternate Payee's Date of Birth","QDRO \u00a71 p1",null],
+  ["APDOD","conditional",1,1,"QDRO",null,"if a QDRO exists","QDRO","1","1","Alternate payee's date of death","Alternate Payee's Date of Death","QDRO \u00a71 p1",null],
+  ["MSTAT","present",1,1,"Census","Plan document",null,"D1","14","4.1","Marital status at DOPT","Marital Status at the Date of Plan Termination: Married, Single, Widowed, Divorced, or Unknown.","D1 \u00a74.1 p14",null],
+  ["DOH","present",1,1,"Census","Plan document",null,"D1","8","2.6","Date of hire","Date of Hire means the date the Employee first worked for the Employer.","D1 \u00a72.6 p8",null],
+  ["DOTE","present",1,1,"Census","Plan document",null,"D1","9","2.7","Date of termination of employment","Date of Termination of Employment.","D1 \u00a72.7 p9",null],
+  ["PA_AMB","present",1,1,"Prior administrator data","Plan document",null,"D1","25","7.2","Prior administrator's accrued monthly benefit","Prior Administrator's Accrued Monthly Benefit at the Date of Termination of Employment.","D1 \u00a77.2 p25",null],
+  ["DOR","present",1,0,"Plan document",null,null,"D1","16","4.3","Actual retirement date","Actual Retirement Date is the date the Participant retired.","D1 \u00a74.3 p16",null],
+  ["SBCD","present",1,0,"Plan document",null,null,"D1","17","4.4","Benefit commencement date","Spouse or Beneficiary's Benefit Commencement Date.","D1 \u00a74.4 p17",null],
+  ["FORM_CODE_ARD","present",1,1,"Plan document",null,null,"D1","15","4.2","ARD benefit form","The ARD Benefit Form is a Single Life Annuity unless the Participant elects otherwise.","D1 \u00a74.2 p15",null],
+  ["SPC_ARD","present",1,1,"Plan document",null,null,"D1","15","4.2","Survivor percent of benefit form","Survivor Percent of the Primary Level Life ARD Benefit Form, as a decimal.","D1 \u00a74.2 p15",null],
+  ["MTHS_ARD","present",1,1,"Plan document",null,null,"D1","15","4.2","Months certain in ARD benefit form","Months Certain in the Primary Level Life ARD Benefit Form.","D1 \u00a74.2 p15",null],
+  ["LEV_MB_ARD","present",1,0,"Plan document",null,null,"D1","26","7.3","Level life ARD benefit in pay status","The monthly amount payable for life to a Retiree in pay status.","D1 \u00a77.3 p26",null],
+  ["DOP","present",1,1,"Census","Plan document",null,"D1","8","2.5","Date of participation","Date of Participation is the date the Employee became a Participant.","D1 \u00a72.5 p8",null],
+  ["CSPA","present",1,1,"Prior administrator data","Plan document",null,"D1","10","2.8","Prior administrator's credited service","Prior Administrator's Credited Service at the Date of Termination of Employment.","D1 \u00a72.8 p10",null],
+  ["VPPA","present",1,1,"Prior administrator data","Plan document",null,"D1","11","2.9","Prior administrator's vesting percentage","Prior Administrator's Calculated Vesting Percentage.","D1 \u00a72.9 p11",null],
+  ["VSPA","present",1,1,"Prior administrator data","Plan document",null,"D1","11","2.9","Prior administrator's vesting service","Prior Administrator's Vesting Service at the Date of Termination of Employment.","D1 \u00a72.9 p11",null],
+  ["PHS","conditional",1,0,"Plan document",null,"if a disability benefit is in pay status","D1","22","8.1","Health status","Health Status Code: Healthy, Disabled without Social Security, or Disabled with Social Security.","D1 \u00a78.1 p22",null],
+  ["QDRO_TYPE","conditional",1,1,"QDRO","Plan document","if a QDRO exists","QDRO","2","2","QDRO type","QDRO Type: Shared or Separate Interest.","QDRO \u00a72 p2",null],
+  ["AP_FIXED_AMT","conditional",1,1,"QDRO",null,"if a QDRO exists","QDRO","3","3","QDRO fixed dollar amount","QDRO Fixed Dollar Amount to the Alternate Payee.","QDRO \u00a73 p3",null],
+  ["AP_PERCENT","ambiguous",1,1,"QDRO",null,"if a QDRO exists","QDRO","3","9.2","QDRO percentage to alternate payee","50% x marital fraction of 10/20 = 0.25","QDRO \u00a79.2 p3","Two readings in the QDRO: \u00a79.2 says 50% x marital fraction; the QDRO appendix says 50% of the accrued benefit. R1 Interpretations of Note."],
+  ["AMB_SPLIT_DATE","conditional",1,1,"QDRO",null,"if a QDRO exists","QDRO","4","4","Accrued monthly benefit at QDRO split date","Accrued Monthly Benefit at the QDRO Split Date.","QDRO \u00a74 p4",null],
+  ["ER_SUBSIDY_IND","conditional",1,1,"QDRO",null,"if a QDRO exists","QDRO","5","5","Early retirement subsidy indicator","Early Retirement Subsidy Indicator for the Alternate Payee: yes or no.","QDRO \u00a75 p5",null],
+  ["QDRO_SPLIT_DATE","conditional",1,1,"QDRO",null,"if a QDRO exists","QDRO","4","4","QDRO accrued benefit split date","QDRO Accrued Benefit Split Date.","QDRO \u00a74 p4",null],
+  ["QDRO_PROV_DATE","conditional",1,1,"QDRO",null,"if a QDRO exists","QDRO","4","4","QDRO final provision date","QDRO Final Provision Date, before the QDRO Split Date.","QDRO \u00a74 p4",null],
+  ["T001","missing",0,0,null,null,null,null,null,null,null,null,null,"Template code only \u2014 not a BCV dictionary field."],
+  ["T002","missing",0,0,null,null,null,null,null,null,null,null,null,"Template code only \u2014 not a BCV dictionary field."],
+  ["AP_REQ_DOR","conditional",1,1,"QDRO",null,"if a QDRO exists","QDRO","6","6","Alternate payee ARD required by QDRO","Alternate Payee ARD Required by the QDRO.","QDRO \u00a76 p6",null]
+];
+
+function buildDemoData(){
+  var elements = DEMO_ROWS.map(function (r) {
+    var f = DEL_FIELD_MAP[r[0]];
+    var el = {
+      field: r[0], description: f.description, reasonRequired: f.reasonRequired,
+      requiredFor: {}, primarySource: r[4], secondarySource: r[5], status: r[1],
+      condition: r[6] || null, citation: null, match: null, note: r[13] || null,
+      audit: []
+    };
+    el.requiredFor[DEL_GROUP_A] = r[2] === 1;
+    el.requiredFor[DEL_GROUP_B] = r[3] === 1;
+    if (r[7]) {
+      el.citation = { document: DEL_DOC_NAMES[r[7]] || r[7], page: r[8], section: r[9], imageViewerDocumentNumber: null };
+    }
+    if (r[10]) {
+      el.match = { concept: r[10], passage: r[11], location: r[12] };
+      el.audit = [r[12]];
+    }
+    return el;
+  });
+  return {
+    planMetadata: {
+      einPn: "12-3456789 / 001", caseNumber: "98765400", dopt: "2025-06-30", dotr: null,
+      planName: "Riverbend Manufacturing Pension Plan", planNumber: "001",
+      processingDivision: "ASD-D", preparedBy: "Muse (synthetic demo)", datePrepared: "2026-11-11",
+      sourceDocuments: [
+        "Riverbend Manufacturing Pension Plan (restated 2020-01-01)",
+        "Riverbend Plan Amendment 2023-06-01",
+        "TWG Memo (synthetic)",
+        "QDRO \u2014 synthetic (2024-03-15)"
+      ],
+      reviewedBy: "", dateReviewed: null,
+      narrative: "Synthetic demo case \u2014 invented plan. All values are invented."
+    },
+    sources: [
+      { name: "Riverbend Manufacturing Pension Plan (restated 2020-01-01)", format: "E", used: "U" },
+      { name: "Riverbend Plan Amendment 2023-06-01", format: "E", used: "U" },
+      { name: "TWG Memo (synthetic)", format: "E", used: "U" },
+      { name: "QDRO \u2014 synthetic (2024-03-15)", format: "E", used: "U" },
+      { name: "Prior administrator census extract (synthetic)", format: "E", used: "NU" }
+    ],
+    participantGroups: [DEL_GROUP_A, DEL_GROUP_B],
+    elements: elements
+  };
+}
+var DEMO_DEL_JSON = buildDemoData();
+
+/* The scraper prompt — injected by scripts/build_single_file.py from
+   prompts/del-scraper-prompt.md. The markers must stay on their own lines. */
+/* PROMPT-START */
+var DEL_SCRAPER_PROMPT = "# DEL \u2014 Data Element Listing Scraper Prompt\n\nUse this prompt with an LLM of your choice. Attach the plan documents\n**and** the other associated documents \u2014 plan document, amendments,\nrestatements, SPD, trust agreement, QDROs, TWG memo, trusteeship\nagreement, prior administrator data, anything about the plan \u2014 together\nwith this prompt. The LLM must return **only** the JSON payload\ndescribed below. That JSON is a *proposal*: it is fed back into the DEL\nGenerator app, validated against `schema/del.schema.json`, reviewed by\na human, and only approved JSON is used to write the DEL Word document.\nThe LLM never fills the Word document and never decides an ambiguous\nfield on its own.\n\n## Your task\n\nYou are listing the data elements a PBGC case needs for a terminated\ndefined-benefit pension plan. For each of the 56 data elements below,\nfind whether the plan's provisions make that field necessary, for\nwhich participant groups, and where in the documents the concept\nappears. Return the answers as JSON matching the schema in\n`schema/del.schema.json` (also summarised in \"Output format\" below).\n\n**You are NOT extracting participant data.** Do not return any\nparticipant's values, names, SSNs, or dates. You are listing which\nfields the plan needs and where each one comes from: the field, why it\nis required, which participant groups need it, the primary and\nsecondary source, and the citation (document, section, page) where the\nconcept appears. A field's `description` is the dictionary definition;\nyour `match.passage` is the short plan-document verbiage that means\nthe same thing.\n\n## Rules\n\n- **Summarise, do not copy verbatim \u2014 ASD STE 100 minimal style.**\n  Every matched passage must be the **smallest string that conveys\n  the meaning**: a noun phrase or short clause, never a full sentence,\n  one idea per passage. Keep ages, service years, percentages, dollar\n  amounts, and dates **exact**. Standard abbreviations: `yr`/`yrs`,\n  `mo`, `hrs`, `%`, `\u00a7`, `excl.`, `equiv.`, `avg comp`, `svc`\n  (service). If stripping verbiage would lose meaning (a condition,\n  an exception, a date), keep the longer form and say why in `note`.\n  A longer value that is still true beats a minimal value that is\n  wrong.\n- **One entry per field.** Every one of the 56 fields below must be\n  present in `elements`. Do not omit a field.\n- **Status.** For each field set `status`:\n  - `present` \u2014 the plan's provisions make this field necessary, and\n    you found where the concept appears. Give the citation and the\n    matched passage.\n  - `conditional` \u2014 the field is necessary only when a condition\n    holds. State the condition in `condition`, e.g. \"if a QDRO\n    exists\", \"if married at DOPT\", \"if a non-spouse beneficiary is\n    named\". QDRO fields are conditional on a QDRO existing. Spouse\n    fields are conditional on the participant being married at DOPT.\n    Non-spouse beneficiary fields are conditional on a non-spouse\n    beneficiary being named.\n  - `notApplicable` \u2014 the plan has no such provision. Do not omit the\n    field, and do not invent a provision. Example: no QDRO in the\n    case \u2192 QDRO fields are `notApplicable`, not `missing`.\n  - `missing` \u2014 you could not find the concept in the documents at\n    all. Set `primarySource` and `secondarySource` to `null`.\n  - `ambiguous` \u2014 two conflicting readings in the same document.\n    Give your best reading and explain the conflict in `note`.\n    Ambiguous fields are clarified in the R1 Interpretations of Note\n    section; you do not resolve them.\n- **Citation for every present or conditional field**: document name,\n  page number, and plan section number in the JSON `citation`\n  object. No citation, no present answer. The app renders it as a\n  minimal code, e.g. `D1 \u00a72.1 p3` (D1 = first document, \u00a7 = plan\n  section, p = page) \u2014 the full document name lives once in the\n  sources list, never repeated in a cell.\n- **Required for.** For each field, set `requiredFor` with one key\n  per participant group (`\"Pay Status Retirees/ Beneficiaries\"` and\n  `\"Active/ Sep. Vested/ Non-Vested\"`), `true` when the field is\n  required for that group, `false` when it is not.\n- **Sources.** `primarySource` is where the field comes from first:\n  \"Census\" for participant identity fields the census carries,\n  \"Plan document\" for fields the plan's provisions create,\n  \"Prior administrator data\" for the prior administrator's amounts\n  (PA_AMB, CSPA, VPPA, VSPA), \"QDRO\" for alternate payee fields.\n  `secondarySource` is the second source, or `null`.\n- **Dates are ISO format `YYYY-MM-DD`. Case number is text, with\n  leading zeros preserved (never a number).**\n- **Do not guess.** A missing, ambiguous, or notApplicable answer is\n  a correct answer. A guessed value is an error.\n- **Never return a full masked value** (no full SSN, no full account\n  number). The DEL lists fields and sources, not values.\n\n## The 56 data elements (field name in brackets)\n\n1) Participant Status at DOPT: 1 Retired, 2 Separated Vested, 3 Active Vested, 4 Nonvested [RETSTAT]\n2) Type of Record: 1 Participant, 2 Beneficiary, 4 Alternate Payee [ID]\n3) Participant's Social Security Number [SSN]\n4) Participant's Date of Birth [DOB]\n5) Participant's First Name [FNAME]\n6) Participant's Middle Name [MNAME]\n7) Participant's Last Name [LNAME]\n8) Date of Death [DOD]\n9) Participant's Gender [PSEX]\n10) Spouse's Social Security Number [SSSN]\n11) Spouse's Date of Birth [SDOB]\n12) Spouse's First Name [SFNAME]\n13) Spouse's Middle Name [SMNAME]\n14) Spouse's Last Name [SLNAME]\n15) Spouse's Extra Name (JR, SR, I, II, III) [SENAME]\n16) Spouse/Beneficiary's Gender [SSEX]\n17) Spouse's Date of Death [SDOD]\n18) Non-Spouse Joint Life Beneficiary Indicator (Y=Yes, N=No) [NON_SPOUSE_BENF]\n19) Non-Spouse Beneficiary's Social Security Number [BSSN]\n20) Non-Spouse Beneficiary's Last Name [BLNAME]\n21) Non-Spouse Beneficiary's First Name [BFNAME]\n22) Non-Spouse Beneficiary's Gender [BSEX]\n23) Non-Spouse Beneficiary's Date of Birth [BDOB]\n24) Non-Spouse Beneficiary's Date of Death [BDOD]\n25) QDRO Indicator (Y=Yes, N=No) [QDRO_INDICATOR]\n26) Alternate Payee's Social Security Number [APSSN]\n27) Alternate Payee's Last Name [APLNAME]\n28) Alternate Payee's First Name [APFNAME]\n29) Alternate Payee's Gender [APSEX]\n30) Alternate Payee's Date of Birth [APDOB]\n31) Alternate Payee's Date of Death [APDOD]\n32) Participant's Marital Status at DOPT: M Married, S Single, W Widowed, D Divorced, U Unknown [MSTAT]\n33) Participant's Date of Hire [DOH]\n34) Date of Termination of Employment [DOTE]\n35) Prior Administrator's Accrued Monthly Benefit [PA_AMB]\n36) Participant's Actual Retirement Date [DOR]\n37) Spouse/Beneficiary's Benefit Commencement Date [SBCD]\n38) ARD Benefit Form [FORM_CODE_ARD]\n39) Spouse/Beneficiary's Percent of Benefit Form [SPC_ARD]\n40) Months Certain in ARD Benefit Form [MTHS_ARD]\n41) Level Life ARD Benefit in Pay Status [LEV_MB_ARD]\n42) Date of Participation [DOP]\n43) Prior Administrator's Credited Service [CSPA]\n44) Prior Administrator's Vesting Percentage [VPPA]\n45) Prior Administrator's Vesting Service [VSPA]\n46) Health Status (0 Healthy, 1 Disabled w/o Social Security, 2 Disabled w/ Social Security) [PHS]\n47) QDRO Type (SH Shared, SI Separate Interest) [QDRO_TYPE]\n48) QDRO Fixed Dollar Amount to Alternate Payee [AP_FIXED_AMT]\n49) QDRO Percentage to Alternate Payee [AP_PERCENT]\n50) Accrued Monthly Benefit at QDRO Split Date [AMB_SPLIT_DATE]\n51) Early Retirement Subsidy Indicator for Alternate Payee (Y=Yes, N=No) [ER_SUBSIDY_IND]\n52) QDRO Accrued Benefit Split Date [QDRO_SPLIT_DATE]\n53) QDRO Final Provision Date [QDRO_PROV_DATE]\n54) Is alternate payee surviving spouse for QPSA [T001]\n55) Is alternate payee surviving spouse for QJSA [T002]\n56) Alternate Payee ARD Required by QDRO [AP_REQ_DOR]\n\nNotes: T001 and T002 are template codes, not BCV Data Dictionary\nfields. Answer them like the other fields, and say so in `note` if\nthe plan has no such provision. The full DEL universe is all Input\nfields from the dictionary (220 Input + 51 Input|Calculated); this\nprompt covers the template's 56. Later prompts will cover the rest,\none field group at a time.\n\n## Output format\n\nReturn **only** valid JSON, no markdown fences, no commentary, no\nexplanation. The JSON must have exactly these top-level keys:\n\n```json\n{\n  \"planMetadata\": {\n    \"einPn\": \"string or null\",\n    \"caseNumber\": \"string (text, leading zeros preserved)\",\n    \"dopt\": \"YYYY-MM-DD\",\n    \"dotr\": \"YYYY-MM-DD or null\",\n    \"planName\": \"string\",\n    \"planNumber\": \"string or null\",\n    \"processingDivision\": \"ASD-D\",\n    \"preparedBy\": \"string or null\",\n    \"datePrepared\": \"YYYY-MM-DD or null\",\n    \"sourceDocuments\": [\"string\"],\n    \"reviewedBy\": \"string or null\",\n    \"dateReviewed\": \"YYYY-MM-DD or null\",\n    \"narrative\": \"string or null\"\n  },\n  \"sources\": [\n    { \"name\": \"string\", \"format\": \"H | E | null\", \"used\": \"U | NU | null\" }\n  ],\n  \"participantGroups\": [\"Pay Status Retirees/ Beneficiaries\", \"Active/ Sep. Vested/ Non-Vested\"],\n  \"elements\": [\n    {\n      \"field\": \"RETSTAT\",\n      \"description\": \"Participant Status at DOPT\",\n      \"reasonRequired\": \"Benefit Calculation\",\n      \"requiredFor\": { \"Pay Status Retirees/ Beneficiaries\": true, \"Active/ Sep. Vested/ Non-Vested\": true },\n      \"primarySource\": \"Census\",\n      \"secondarySource\": \"Plan document\",\n      \"status\": \"present | conditional | notApplicable | missing | ambiguous\",\n      \"condition\": \"string or null (for conditional: the condition, e.g. \\\"if a QDRO exists\\\")\",\n      \"citation\": { \"document\": \"string\", \"page\": \"string or number or null\", \"section\": \"string or null\", \"imageViewerDocumentNumber\": \"string or null\" },\n      \"match\": { \"concept\": \"string (name as it appears in the plan document)\", \"passage\": \"string (short plan-document verbiage, STE 100 minimal)\", \"location\": \"string, e.g. \\\"D1 \u00a72.1 p3\\\"\" },\n      \"note\": \"string or null\",\n      \"audit\": [\"minimal location code, e.g. \\\"D1 \u00a72.1 p3\\\"\"]\n    }\n  ]\n}\n```\n\nEvery one of the 56 fields must be present in `elements`. `sources`\nlists every document you used, with format H (hard copy) or E\n(electronic) and whether it was used (U) or not (NU).\n`participantGroups` lists the Defined Groups of Participants, one\ncolumn per group in the DEL table.\n\n## Workflow reminder (for the human, not the LLM)\n\n1. Download this prompt from the DEL Generator app.\n2. Feed the plan documents and associated documents + this prompt to\n   your LLM (Microsoft Copilot in the office, any LLM at home).\n3. Take the JSON the LLM returns and upload / paste it back into the\n   DEL Generator app.\n4. The app validates the JSON against the schema, flags missing /\n   ambiguous / uncited items, and you review and approve each one.\n5. Only approved JSON writes the filled DEL Word document. The app\n   also ranks every field by similarity score on the Match ranking\n   page, so you can check the weakest matches first.\n";
+/* PROMPT-END */
+
+/* ---- Deterministic lexical scorer (plain JS, offline) ----
+   Score = 0.5 * Dice token overlap + 0.3 * shared-bigram overlap +
+   0.2 * key-term coverage (the field's name words in the passage).
+   Numbers are kept as tokens, so "age 65" and "age 62" score
+   differently. The score is decomposable: delScore returns the
+   matched tokens, so the reviewer sees why. */
+var DEL_STOP = {the:1,a:1,an:1,of:1,for:1,in:1,at:1,on:1,by:1,to:1,and:1,or:1,is:1,are:1,was:1,be:1,as:1,with:1,from:1,that:1,this:1,it:1,its:1,not:1,no:1,per:1,shall:1,will:1,may:1,must:1,any:1,each:1,such:1,also:1,means:1,which:1,who:1,when:1,where:1};
+var DEL_EXPAND = {
+  qdro:["qualified","domestic","relations","order"],
+  qpsa:["qualified","preretirement","survivor","annuity"],
+  qjsa:["qualified","joint","survivor","annuity"],
+  ard:["actual","retirement","date"],
+  amb:["accrued","monthly","benefit"],
+  ssn:["social","security","number"],
+  dob:["date","birth"],
+  dopt:["date","plan","termination"],
+  dotr:["date","trusteeship"],
+  cspa:["credited","service"],
+  vppa:["vesting","percentage"],
+  vspa:["vesting","service"],
+  ap:["alternate","payee"],
+  eec:["employee","contributions"],
+  spc:["survivor","percent"],
+  mths:["months"],
+  lev:["level"],
+  mb:["monthly","benefit"],
+  mstat:["marital","status"],
+  retstat:["retirement","status"],
+  doh:["date","hire"],
+  dote:["date","termination","employment"],
+  dop:["date","participation"],
+  dor:["actual","retirement","date"],
+  dod:["date","death"]
+};
+var DEL_SYNONYM = {
+  born:"birth", birthday:"birth", died:"death", deceased:"death",
+  employee:"participant", member:"participant", earned:"accrued",
+  married:"marital", marriage:"marital", salary:"compensation",
+  wages:"compensation", pension:"benefit", disabled:"disability",
+  healthy:"health", retiree:"retir", retired:"retir", retirement:"retir"
+};
+function delStem(t){
+  if(/^\d+$/.test(t)) return t;
+  if(t.indexOf("retir")===0) return "retir";
+  if(t.indexOf("marri")===0||t.indexOf("marit")===0) return "marit";
+  if(t.length>4&&t.slice(-3)==="ies") return t.slice(0,-3)+"y";
+  if(t.length>4&&t.slice(-2)==="es") return t.slice(0,-2);
+  if(t.length>3&&t.slice(-1)==="s"&&t.slice(-2)!=="ss") return t.slice(0,-1);
+  if(t.length>4&&t.slice(-2)==="ed") return t.slice(0,-2);
+  if(t.length>5&&t.slice(-3)==="ing") return t.slice(0,-3);
+  if(t.length>4&&t.slice(-1)==="e") return t.slice(0,-1);
+  return t;
+}
+function delTokenize(text){
+  if(text===null||text===undefined) return [];
+  var raw=String(text).toLowerCase().replace(/[^a-z0-9]+/g," ").split(" ").filter(Boolean);
+  var out=[];
+  raw.forEach(function(t){
+    if(DEL_EXPAND[t]){ out.push.apply(out,DEL_EXPAND[t]); return; }
+    if(DEL_SYNONYM[t]) t=DEL_SYNONYM[t];
+    if(DEL_STOP[t]) return;
+    if(t.length<2&&!/^\d+$/.test(t)) return;
+    out.push(delStem(t));
+  });
+  return out;
+}
+function delBigrams(tokens){
+  var s={},i;
+  for(i=0;i+1<tokens.length;i++) s[tokens[i]+" "+tokens[i+1]]=1;
+  return s;
+}
+function delSetOverlap(a,b){
+  var n=0,k;
+  for(k in a) if(b[k]) n++;
+  return n;
+}
+function delScore(definition,passage,field){
+  var dToks=delTokenize(definition), pToks=delTokenize(passage);
+  var dSet={},pSet={},i;
+  dToks.forEach(function(t){dSet[t]=1;}); pToks.forEach(function(t){pSet[t]=1;});
+  var dN=Object.keys(dSet).length, pN=Object.keys(pSet).length;
+  var inter=[];
+  for(var k in dSet) if(pSet[k]) inter.push(k);
+  var dice=(dN+pN)?(2*inter.length)/(dN+pN):0;
+  var dBi=delBigrams(dToks), pBi=delBigrams(pToks);
+  var dBn=Object.keys(dBi).length, pBn=Object.keys(pBi).length;
+  var biN=delSetOverlap(dBi,pBi);
+  var bigram=(dBn+pBn)?(2*biN)/(dBn+pBn):0;
+  var keyToks=delTokenize(DEL_KEY_TERMS[field]||field);
+  var keyHit=0;
+  keyToks.forEach(function(t){ if(pSet[t]) keyHit++; });
+  var keyterm=keyToks.length?(keyHit/keyToks.length):0;
+  var score=Math.round(100*(0.5*dice+0.3*bigram+0.2*keyterm));
+  return {score:score, matched:inter.sort(), dice:dice, bigram:bigram, keyterm:keyterm};
+}
+/* Key terms per field: the field's name words, as plain text (tokenized
+   the same way as the passages, so acronyms expand and stems match). */
+var DEL_KEY_TERMS = {
+  RETSTAT:"participant status dopt", ID:"type record", SSN:"participant social security number",
+  DOB:"participant date birth", FNAME:"participant first name", MNAME:"participant middle name",
+  LNAME:"participant last name", DOD:"date death", PSEX:"participant sex",
+  SSSN:"spouse social security number", SDOB:"spouse date birth", SFNAME:"spouse first name",
+  SMNAME:"spouse middle name", SLNAME:"spouse last name", SENAME:"spouse extra name",
+  SSEX:"spouse sex", SDOD:"spouse date death",
+  NON_SPOUSE_BENF:"non spouse beneficiary indicator",
+  BSSN:"beneficiary social security number", BLNAME:"beneficiary last name",
+  BFNAME:"beneficiary first name", BSEX:"beneficiary sex", BDOB:"beneficiary date birth",
+  BDOD:"beneficiary date death", QDRO_INDICATOR:"qdRO indicator",
+  APSSN:"alternate payee social security number", APLNAME:"alternate payee last name",
+  APFNAME:"alternate payee first name", APSEX:"alternate payee sex",
+  APDOB:"alternate payee date birth", APDOD:"alternate payee date death",
+  MSTAT:"participant marital status dopt", DOH:"participant date hire",
+  DOTE:"date termination employment", PA_AMB:"prior administrator accrued monthly benefit",
+  DOR:"participant actual retirement date", SBCD:"spouse beneficiary benefit commencement date",
+  FORM_CODE_ARD:"ard benefit form", SPC_ARD:"spouse beneficiary percent benefit form",
+  MTHS_ARD:"months certain ard benefit form", LEV_MB_ARD:"level life ard benefit pay status",
+  DOP:"date participation", CSPA:"prior administrator credited service",
+  VPPA:"prior administrator vesting percentage", VSPA:"prior administrator vesting service",
+  PHS:"health status", QDRO_TYPE:"qdRO type",
+  AP_FIXED_AMT:"qdRO fixed dollar amount alternate payee",
+  AP_PERCENT:"qdRO percentage alternate payee",
+  AMB_SPLIT_DATE:"accrued monthly benefit qdRO split date",
+  ER_SUBSIDY_IND:"early retirement subsidy indicator alternate payee",
+  QDRO_SPLIT_DATE:"qdRO accrued benefit split date", QDRO_PROV_DATE:"qdRO final provision date",
+  T001:"alternate payee surviving spouse qpsa", T002:"alternate payee surviving spouse qjsa",
+  AP_REQ_DOR:"alternate payee ard required qdRO"
+};
+/* Short dictionary definitions, for scoring. The template's Description
+   column is what the .docx shows; these are the dictionary's core
+   definitions (BCV Data Dictionary Complete, 2026-10-30 index), used
+   only so the scorer can tell look-alike fields apart (e.g. DOD vs
+   SDOD, PSEX vs SSEX). APLNAME's dictionary description is "form_co"
+   (a data error in the dictionary) — the template's words are used. */
+var DEL_DICT_SHORT = {
+  RETSTAT:"Participant Status at DOPT", ID:"Type of Record",
+  SSN:"Participant's SSN", DOB:"Participant's Date of Birth",
+  FNAME:"Participant's First Name", MNAME:"Participant's Middle Name",
+  LNAME:"Participant's Last Name", DOD:"Participant's Date of Death",
+  PSEX:"Participant's Sex", SSSN:"Spouse's SSN", SDOB:"Spouse's Date of Birth",
+  SFNAME:"Spouse's First Name", SMNAME:"Spouse's Middle Name",
+  SLNAME:"Spouse's Last Name", SENAME:"Spouse's Extra Name",
+  SSEX:"Spouse's Sex", SDOD:"Spouse's Date of Death",
+  NON_SPOUSE_BENF:"Non-Spouse Joint Life Beneficiary Indicator",
+  BSSN:"Non-Spouse Beneficiary's Social Security Number",
+  BLNAME:"Non-Spouse Beneficiary's Last Name",
+  BFNAME:"Non-Spouse Beneficiary's First Name",
+  BSEX:"Non-Spouse Beneficiary's Sex",
+  BDOB:"Non-Spouse Beneficiary's Date of Birth",
+  BDOD:"Non-Spouse Beneficiary's Date of Death",
+  QDRO_INDICATOR:"QDRO Indicator", APSSN:"Alternate Payee's Social Security Number",
+  APLNAME:"Alternate Payee's Last Name", APFNAME:"Alternate Payee's First Name",
+  APSEX:"Alternate Payee's Sex", APDOB:"Alternate Payee's Date of Birth",
+  APDOD:"Alternate Payee's Date of Death", MSTAT:"Participant's Marital Status",
+  DOH:"Participant's Date of Hire", DOTE:"Participant's Date of Termination of Employment",
+  PA_AMB:"Plan Administrator Accrued Monthly Benefit at DOTE",
+  DOR:"Participant's Actual Retirement Date",
+  SBCD:"Beneficiary's Benefit Commencement Date",
+  FORM_CODE_ARD:"Primary Level Life ARD Benefit Form",
+  SPC_ARD:"Survivor Percent of Primary Level Life ARD Benefit Form",
+  MTHS_ARD:"Original Number of Months Certain in the Primary Level Life ARD Benefit Form",
+  LEV_MB_ARD:"Primary Level Life ARD Benefit in Pay-status",
+  DOP:"Participant's Date of Participation",
+  CSPA:"Plan Administrator's Credited Service at DOTE",
+  VPPA:"Plan Administrator's Calculated Vesting Percentage",
+  VSPA:"Plan Administrator's Vesting Service at DOTE",
+  PHS:"Participant's Health Status Code", QDRO_TYPE:"QDRO Type",
+  AP_FIXED_AMT:"QDRO Fixed Dollar Amount to Alternate Payee",
+  AP_PERCENT:"QDRO Percentage to Alternate Payee",
+  AMB_SPLIT_DATE:"Accrued Monthly Benefit at QDRO Split Date",
+  ER_SUBSIDY_IND:"Early Retirement Subsidy Indicator for Alternate Payee",
+  QDRO_SPLIT_DATE:"QDRO Accrued Benefit Split Date",
+  QDRO_PROV_DATE:"QDRO Final Provision Date",
+  T001:"Is alternate payee surviving spouse for QPSA",
+  T002:"Is alternate payee surviving spouse for QJSA",
+  AP_REQ_DOR:"Alternate Payee ARD Required by QDRO"
+};
+/* Token inverted index over passages: token -> [passage ids]. Only
+   passages sharing at least one token with the definition are scored
+   (candidate pre-filtering: 1,152 fields x thousands of sentences is
+   too many pairs to score naively). */
+function delBuildIndex(passages){
+  var idx={}, i, toks;
+  passages.forEach(function(p,i){
+    toks=delTokenize(p.text);
+    toks.forEach(function(t){ if(!idx[t]) idx[t]=[]; if(idx[t].indexOf(i)<0) idx[t].push(i); });
+  });
+  return idx;
+}
+function delBestMatch(definition,field,passages,index){
+  var dToks=delTokenize(definition);
+  var cand={}, i, best=null;
+  if(index){
+    dToks.forEach(function(t){ (index[t]||[]).forEach(function(pi){ cand[pi]=1; }); });
+  } else {
+    passages.forEach(function(p,pi){ cand[pi]=1; });
+  }
+  Object.keys(cand).forEach(function(pi){
+    var p=passages[pi];
+    var s=delScore(definition,p.text,field);
+    if(!best||s.score>best.score) best={passage:p, score:s.score, matched:s.matched, detail:s};
+  });
+  return best;
+}
+/* Rank every element against the pool of matched passages.
+   Returns {ranked:[{element,passage,score,matched,detail}] sorted
+   descending, unmatched:[element]}. An element with no match object,
+   or whose definition shares no token with any passage, is unmatched —
+   surfaced, never dropped. */
+function delRankElements(elements){
+  var pool=[];
+  (elements||[]).forEach(function(el){
+    if(el&&el.match&&el.match.passage) pool.push({field:el.field, text:el.match.passage, location:el.match.location||"", concept:el.match.concept||""});
+  });
+  var index=pool.length?delBuildIndex(pool):null;
+  var ranked=[], unmatched=[];
+  (elements||[]).forEach(function(el){
+    if(!el) return;
+    if(!el.match||!el.match.passage){ unmatched.push(el); return; }
+    var defn=DEL_DICT_SHORT[el.field]||el.description||el.field;
+    var best=pool.length?delBestMatch(defn,el.field,pool,index):null;
+    if(!best){ unmatched.push(el); return; }
+    ranked.push({element:el, passage:best.passage, score:best.score, matched:best.matched, detail:best.detail});
+  });
+  ranked.sort(function(a,b){ return b.score-a.score || (a.element.field<b.element.field?-1:1); });
+  return {ranked:ranked, unmatched:unmatched};
+}
+
+/* ---- DEL JSON validator (plain JS, no ajv) ---- */
+var DEL_STATUSES = ["present","notApplicable","missing","ambiguous","conditional"];
+var DEL_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+function validateDelJson(d){
+  var errors=[], warnings=[];
+  if(!d||typeof d!=="object"||Array.isArray(d)) return {ok:false, errors:["Not a JSON object."], warnings:[]};
+  var m=d.planMetadata;
+  if(!m||typeof m!=="object") errors.push("planMetadata is missing.");
+  else{
+    if(!m.planName||typeof m.planName!=="string") errors.push("planMetadata.planName is required (a string).");
+    if(typeof m.caseNumber!=="string"||!m.caseNumber) errors.push("planMetadata.caseNumber is required (text — leading zeros kept).");
+    if(typeof m.dopt!=="string"||!DEL_DATE_RE.test(m.dopt)) errors.push("planMetadata.dopt must be a date, YYYY-MM-DD.");
+    if(m.dotr!==undefined&&m.dotr!==null&&!DEL_DATE_RE.test(m.dotr)) errors.push("planMetadata.dotr must be a date, YYYY-MM-DD, or null.");
+    if(m.datePrepared!==undefined&&m.datePrepared!==null&&!DEL_DATE_RE.test(m.datePrepared)) errors.push("planMetadata.datePrepared must be a date, YYYY-MM-DD, or null.");
+    if(m.dateReviewed!==undefined&&m.dateReviewed!==null&&!DEL_DATE_RE.test(m.dateReviewed)) errors.push("planMetadata.dateReviewed must be a date, YYYY-MM-DD, or null.");
+    if(m.sourceDocuments!==undefined&&!Array.isArray(m.sourceDocuments)) errors.push("planMetadata.sourceDocuments must be an array of strings.");
+  }
+  if(!Array.isArray(d.sources)) errors.push("sources must be an array.");
+  else d.sources.forEach(function(s,i){
+    if(!s||typeof s.name!=="string") errors.push("sources["+i+"].name is required.");
+    if(s.format!==undefined&&s.format!==null&&s.format!=="H"&&s.format!=="E") errors.push("sources["+i+"].format must be H or E.");
+    if(s.used!==undefined&&s.used!==null&&s.used!=="U"&&s.used!=="NU") errors.push("sources["+i+"].used must be U or NU.");
+  });
+  if(!Array.isArray(d.participantGroups)||!d.participantGroups.length) errors.push("participantGroups must be a non-empty array of group names.");
+  if(!Array.isArray(d.elements)) errors.push("elements must be an array.");
+  else{
+    var seen={};
+    d.elements.forEach(function(el,i){
+      var where="elements["+i+"]";
+      if(!el||typeof el!=="object"){ errors.push(where+" is not an object."); return; }
+      if(typeof el.field!=="string"||!el.field){ errors.push(where+".field is required."); return; }
+      if(seen[el.field]) errors.push("Duplicate field: "+el.field+".");
+      seen[el.field]=1;
+      if(DEL_STATUSES.indexOf(el.status)<0) errors.push(where+" ("+el.field+"): status must be present, notApplicable, missing, ambiguous, or conditional.");
+      if(el.status==="conditional"&&(!el.condition||typeof el.condition!=="string")) errors.push(where+" ("+el.field+"): conditional needs a condition, e.g. \"if a QDRO exists\".");
+      if(el.status==="present"&&(!el.primarySource||typeof el.primarySource!=="string")) errors.push(where+" ("+el.field+"): present needs a primarySource.");
+      if(el.status==="present"&&(!el.citation||typeof el.citation!=="object"||!el.citation.document)) errors.push(where+" ("+el.field+"): present needs a citation (document, page, section).");
+      if(el.status==="notApplicable"&&(el.primarySource||el.secondarySource)) warnings.push(el.field+": notApplicable but a source is listed — check it in Review.");
+      if(el.status==="missing"&&(el.primarySource||el.secondarySource)) warnings.push(el.field+": missing but a source is listed — check it in Review.");
+      if(el.field==="T001"||el.field==="T002") warnings.push(el.field+": template code, not a BCV dictionary field — the note should say so.");
+    });
+  }
+  return {ok:errors.length===0, errors:errors, warnings:warnings};
+}
+
+/* ---- Flexible JSON import (plain JS, no modules, no fetch) ----
+   Adapted from the R5 flex import (packages/module-1-r5/src/flexImport.js).
+   Accepts: (a) DEL schema JSON — passed through; (b) a flat key-value
+   JSON; (c) nested objects, flattened with dot paths; (d) an OCR-payload
+   envelope {extraction, candidateSources, fieldEvidence} from the OCR
+   pipeline app. Nothing is guessed: a key that matches nothing is
+   returned as UNMAPPED, never dropped. Conflicts become ambiguous,
+   never silently merged. */
+var DEL_FLEX_SOURCE_TYPES = [
+  "Plan Document","Amendment","Restatement","TWG Memo",
+  "Trusteeship Agreement","cms-screens","PIP","OCR payload","Other"
+];
+var DEL_ELEMENT_FIELDS = DEL_FIELDS.map(function (f) { return f[0]; });
+var DEL_FLEX_HEADER_TARGETS = {
+  einPn:{section:"planMetadata",kind:"string"},
+  caseNumber:{section:"planMetadata",kind:"string"},
+  dopt:{section:"planMetadata",kind:"date"},
+  dotr:{section:"planMetadata",kind:"date"},
+  planName:{section:"planMetadata",kind:"string"},
+  planNumber:{section:"planMetadata",kind:"string"},
+  processingDivision:{section:"planMetadata",kind:"string"},
+  preparedBy:{section:"planMetadata",kind:"string"},
+  datePrepared:{section:"planMetadata",kind:"date"},
+  reviewedBy:{section:"planMetadata",kind:"string"},
+  dateReviewed:{section:"planMetadata",kind:"date"},
+  narrative:{section:"planMetadata",kind:"string"}
+};
+/* Synonym table: normalized key -> target field. Normalization is
+   lowercase + strip everything that is not a-z0-9. A bare word is only
+   listed when it is unambiguous: "dateofbirth" alone could be DOB,
+   SDOB, BDOB or APDOB, so it is NOT listed; "ssn" alone could be SSN,
+   SSSN, BSSN or APSSN, so it is NOT listed either. The exact field
+   name (normalized) always matches too, without needing an entry here. */
+var DEL_FLEX_SYNONYMS = {
+  einpn:"einPn", ein:"einPn",
+  planname:"planName", plan:"planName",
+  plannumber:"planNumber", planno:"planNumber",
+  casenumber:"caseNumber", caseno:"caseNumber",
+  dateofplantermination:"dopt", terminationdate:"dopt",
+  dateoftrusteeship:"dotr",
+  preparedby:"preparedBy", dateprepared:"datePrepared",
+  reviewedby:"reviewedBy", datereviewed:"dateReviewed",
+  narrative:"narrative", processingdivision:"processingDivision",
+  sourcedocuments:"sourceDocuments",
+  participantstatus:"RETSTAT", participantstatusatdopt:"RETSTAT",
+  typeofrecord:"ID",
+  participantssn:"SSN", participantssocialsecuritynumber:"SSN",
+  participantdateofbirth:"DOB",
+  participantfirstname:"FNAME", participantmiddlename:"MNAME", participantlastname:"LNAME",
+  participantdateofdeath:"DOD",
+  participantgender:"PSEX", participantsex:"PSEX",
+  spousessn:"SSSN", spousessocialsecuritynumber:"SSSN",
+  spousedateofbirth:"SDOB",
+  spousefirstname:"SFNAME", spousemiddlename:"SMNAME", spouselastname:"SLNAME",
+  spouseextraname:"SENAME",
+  spousesex:"SSEX", spousegender:"SSEX",
+  spousedateofdeath:"SDOD",
+  nonspousebeneficiaryindicator:"NON_SPOUSE_BENF", nonspousejointlifebeneficiaryindicator:"NON_SPOUSE_BENF",
+  nonspousebeneficiaryssn:"BSSN", nonspousebeneficiarysocialsecuritynumber:"BSSN",
+  nonspousebeneficiarylastname:"BLNAME", nonspousebeneficiaryfirstname:"BFNAME",
+  nonspousebeneficiarygender:"BSEX", nonspousebeneficiarysex:"BSEX",
+  nonspousebeneficiarydateofbirth:"BDOB", nonspousebeneficiarydateofdeath:"BDOD",
+  qdroindicator:"QDRO_INDICATOR",
+  alternatepayeessn:"APSSN", alternatepayeessocialsecuritynumber:"APSSN",
+  alternatepayeelastname:"APLNAME", alternatepayeefirstname:"APFNAME",
+  alternatepayeegender:"APSEX", alternatepayeesex:"APSEX",
+  alternatepayeedateofbirth:"APDOB", alternatepayeedateofdeath:"APDOD",
+  maritalstatus:"MSTAT", participantmaritalstatus:"MSTAT",
+  dateofhire:"DOH", participantdateofhire:"DOH",
+  dateofterminationofemployment:"DOTE",
+  prioradministratoraccruedmonthlybenefit:"PA_AMB",
+  actualretirementdate:"DOR", participantactualretirementdate:"DOR",
+  beneficiarybenefitcommencementdate:"SBCD", spousebeneficiarybenefitcommencementdate:"SBCD",
+  ardbenefitform:"FORM_CODE_ARD",
+  survivorpercent:"SPC_ARD", spousebeneficiarypercent:"SPC_ARD",
+  monthscertain:"MTHS_ARD",
+  levellifeardbenefitinpaystatus:"LEV_MB_ARD",
+  dateofparticipation:"DOP", participantdateofparticipation:"DOP",
+  prioradministratorcreditedservice:"CSPA", creditedservice:"CSPA",
+  prioradministratorvestingpercentage:"VPPA", vestingpercentage:"VPPA",
+  prioradministratorvestingservice:"VSPA", vestingservice:"VSPA",
+  healthstatus:"PHS", participanthealthstatus:"PHS",
+  qdrotype:"QDRO_TYPE",
+  qdrofixeddollaramount:"AP_FIXED_AMT",
+  qdropercentage:"AP_PERCENT",
+  accruedmonthlybenefitatqdrosplitdate:"AMB_SPLIT_DATE",
+  earlyretirementsubsidyindicator:"ER_SUBSIDY_IND",
+  qdroaccruedbenefitsplitdate:"QDRO_SPLIT_DATE", qdrosplitdate:"QDRO_SPLIT_DATE",
+  qdrofinalprovisiondate:"QDRO_PROV_DATE",
+  alternatepayeesurvivingspouseqpsa:"T001",
+  alternatepayeesurvivingspouseqjsa:"T002",
+  alternatepayeeardrequiredbyqdRO:"AP_REQ_DOR"
+};
+function delFlexNormKey(k){ return String(k||"").toLowerCase().replace(/[^a-z0-9]/g,""); }
+var DEL_FIELD_NORM={};
+DEL_ELEMENT_FIELDS.forEach(function(f){ DEL_FIELD_NORM[delFlexNormKey(f)]=f; });
+function delFlattenJson(value,prefix,out){
+  out=out||[];
+  if(value&&typeof value==="object"&&!Array.isArray(value)){
+    Object.keys(value).forEach(function(k){ delFlattenJson(value[k],prefix?prefix+"."+k:k,out); });
+  } else out.push({path:prefix||"", value:value});
+  return out;
+}
+var DEL_FLEX_MONTHS={january:"01",february:"02",march:"03",april:"04",may:"05",june:"06",july:"07",august:"08",september:"09",october:"10",november:"11",december:"12",jan:"01",feb:"02",mar:"03",apr:"04",jun:"06",jul:"07",aug:"08",sep:"09",sept:"09",oct:"10",nov:"11",dec:"12"};
+function delFlexNormalizeDate(v){
+  if(v===null||v===undefined||v==="") return null;
+  if(typeof v==="number"&&v>19000101&&v<21001231){ var s=String(Math.floor(v)); return s.slice(0,4)+"-"+s.slice(4,6)+"-"+s.slice(6,8); }
+  var str=String(v).trim(), m;
+  m=str.match(/^(\d{4})(\d{2})(\d{2})$/); if(m) return m[1]+"-"+m[2]+"-"+m[3];
+  m=str.match(/^(\d{4})-(\d{2})-(\d{2})$/); if(m) return str;
+  m=str.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/); if(m) return m[1]+"-"+("0"+m[2]).slice(-2)+"-"+("0"+m[3]).slice(-2);
+  m=str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/); if(m) return m[3]+"-"+("0"+m[1]).slice(-2)+"-"+("0"+m[2]).slice(-2);
+  m=str.match(/^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})$/); if(m&&DEL_FLEX_MONTHS[m[2].toLowerCase()]) return m[3]+"-"+DEL_FLEX_MONTHS[m[2].toLowerCase()]+"-"+("0"+m[1]).slice(-2);
+  m=str.match(/^([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})$/); if(m&&DEL_FLEX_MONTHS[m[1].toLowerCase()]) return m[3]+"-"+DEL_FLEX_MONTHS[m[1].toLowerCase()]+"-"+("0"+m[2]).slice(-2);
+  return null;
+}
+function delFlexIsEmpty(v){ return v===null||v===undefined||(typeof v==="string"&&(v.trim()===""||v.trim().toUpperCase()==="N/A")); }
+function delFlexResolveTarget(normKey,lastSegment,savedMappings){
+  if(savedMappings&&savedMappings[normKey]) return savedMappings[normKey];
+  if(savedMappings&&savedMappings[lastSegment]) return savedMappings[lastSegment];
+  if(DEL_FLEX_SYNONYMS[normKey]) return DEL_FLEX_SYNONYMS[normKey];
+  if(DEL_FLEX_SYNONYMS[lastSegment]) return DEL_FLEX_SYNONYMS[lastSegment];
+  if(DEL_FLEX_HEADER_TARGETS[normKey]) return normKey;
+  if(DEL_FLEX_HEADER_TARGETS[lastSegment]) return lastSegment;
+  if(DEL_FIELD_NORM[normKey]) return DEL_FIELD_NORM[normKey];
+  if(DEL_FIELD_NORM[lastSegment]) return DEL_FIELD_NORM[lastSegment];
+  return null;
+}
+function delIsDelJson(d){
+  return Boolean(d&&typeof d==="object"&&!Array.isArray(d)&&
+    d.planMetadata&&typeof d.planMetadata==="object"&&
+    Array.isArray(d.sources)&&Array.isArray(d.participantGroups)&&
+    Array.isArray(d.elements));
+}
+function delEmptySkeleton(sourceLabel){
+  var elements=DEL_FIELDS.map(function(f){
+    var el={field:f[0],description:f[1],reasonRequired:f[2],requiredFor:{},primarySource:null,secondarySource:null,status:"missing",condition:null,citation:null,match:null,note:null,audit:["flex import: not in payload"]};
+    el.requiredFor[DEL_GROUP_A]=false; el.requiredFor[DEL_GROUP_B]=false;
+    return el;
+  });
+  return {
+    planMetadata:{einPn:null,caseNumber:"",dopt:"",dotr:null,planName:"",planNumber:null,processingDivision:"ASD-D",preparedBy:null,datePrepared:null,sourceDocuments:[],reviewedBy:null,dateReviewed:null,narrative:null},
+    sources:[{name:sourceLabel||"JSON payload",format:"E",used:"U"}],
+    participantGroups:[DEL_GROUP_A,DEL_GROUP_B],
+    elements:elements
+  };
+}
+function delElementByField(data,field){
+  for(var i=0;i<data.elements.length;i++) if(data.elements[i].field===field) return data.elements[i];
+  return null;
+}
+/* The main entry point.
+   opts: {sourceType, sourceLabel, savedMappings}
+   Returns {kind, data, mapped, unmapped, conflicts, warnings, errors}. */
+function importFlexDelJson(payload,opts){
+  opts=opts||{};
+  var sourceType=opts.sourceType||"Other";
+  var sourceLabel=opts.sourceLabel||sourceType;
+  var savedMappings=opts.savedMappings||{};
+  var result={kind:"flex",data:null,mapped:[],unmapped:[],conflicts:[],warnings:[],errors:[]};
+  if(payload===null||payload===undefined){ result.errors.push("Empty payload: nothing to import."); return result; }
+  if(delIsDelJson(payload)){
+    result.kind="del"; result.data=payload;
+    result.mapped.push({path:"(root)",target:"(DEL schema JSON)",value:"passed through unchanged"});
+    return result;
+  }
+  if(typeof payload!=="object"){ result.errors.push("The JSON must be an object (or an array of objects)."); return result; }
+  /* OCR-payload envelope: {extraction, candidateSources, fieldEvidence}. */
+  if(payload.extraction&&typeof payload.extraction==="object"&&!Array.isArray(payload.extraction)){
+    return delImportOcrEnvelope(payload,opts,result);
+  }
+  var entries=[];
+  if(Array.isArray(payload)){
+    payload.forEach(function(item,i){
+      if(item&&typeof item==="object"&&!Array.isArray(item)) delFlattenJson(item,"["+i+"]",entries);
+    });
+    if(!entries.length){ result.errors.push("The JSON array holds no objects to map."); return result; }
+  } else entries=delFlattenJson(payload,"",[]);
+  var data=delEmptySkeleton(sourceLabel);
+  var seen={};
+  entries.forEach(function(entry){
+    var path=entry.path;
+    var lastSegment=delFlexNormKey(path.split(".").pop());
+    var normKey=delFlexNormKey(path.replace(/\[\d+\]/g,""));
+    var target=delFlexResolveTarget(normKey,lastSegment,savedMappings);
+    if(!target){ result.unmapped.push({path:path,value:entry.value,reason:"no matching DEL field — map it in Review or ignore it"}); return; }
+    var raw=entry.value;
+    if(delFlexIsEmpty(raw)) return;
+    if(target==="sourceDocuments"){
+      if(Array.isArray(raw)){ data.planMetadata.sourceDocuments=raw.map(String); result.mapped.push({path:path,target:target,value:raw.length+" documents"}); }
+      else { data.planMetadata.sourceDocuments=[String(raw)]; result.mapped.push({path:path,target:target,value:String(raw)}); }
+      return;
+    }
+    var header=DEL_FLEX_HEADER_TARGETS[target];
+    if(header){
+      var norm=null;
+      if(header.kind==="date"){
+        norm=delFlexNormalizeDate(raw);
+        if(norm===null){ result.unmapped.push({path:path,value:raw,reason:"date not recognised — use YYYY-MM-DD, MM/DD/YYYY, or Month D, YYYY"}); return; }
+      } else norm=String(raw).trim();
+      var prev=seen[target]||[];
+      var clash=prev.filter(function(p){ return String(p.value)!==String(norm); });
+      if(clash.length){
+        result.conflicts.push({target:target,values:[clash[0].value,norm],paths:[clash[0].path,path],note:"Two sources disagree on "+target+": \""+clash[0].value+"\" vs \""+norm+"\". Pick one in Review — neither was kept."});
+        if(header.section==="planMetadata") data.planMetadata[target]=(target==="planName"||target==="caseNumber")?"":null;
+        else data.planMetadata[target]=null;
+        return;
+      }
+      seen[target]=prev.concat([{value:norm,path:path}]);
+      data.planMetadata[target]=norm;
+      result.mapped.push({path:path,target:target,value:norm});
+      return;
+    }
+    /* Element field: the value is the matched passage (or a status word). */
+    var el=delElementByField(data,target);
+    if(!el){ result.unmapped.push({path:path,value:raw,reason:"no such element in the DEL"}); return; }
+    var val=String(raw);
+    var pPrev=seen[target]||[];
+    var pClash=pPrev.filter(function(p){ return String(p.value)!==val; });
+    if(pClash.length){
+      el.status="ambiguous";
+      el.note=String(pClash[0].value)+" vs "+val+" — disagree; R1 Interpretations of Note.";
+      el.audit=(el.audit||[]).concat([sourceLabel+" · "+path]);
+      result.conflicts.push({target:target,values:[pClash[0].value,val],paths:[pClash[0].path,path],note:"Two values for "+target+" — marked ambiguous for review."});
+      return;
+    }
+    seen[target]=pPrev.concat([{value:val,path:path}]);
+    if(DEL_STATUSES.indexOf(val)<0){
+      el.status="present";
+      el.primarySource=sourceLabel;
+      el.citation={document:sourceLabel,page:null,section:null,imageViewerDocumentNumber:null};
+      el.match={concept:el.description,passage:val,location:sourceLabel};
+      el.audit=[sourceLabel+" · "+path];
+    } else {
+      el.status=val;
+    }
+    result.mapped.push({path:path,target:target,value:val});
+  });
+  if(!data.planMetadata.planName) result.warnings.push("planName was not in this payload — fill it in Review (header).");
+  if(!data.planMetadata.caseNumber) result.warnings.push("caseNumber was not in this payload — fill it in Review (header).");
+  if(!data.planMetadata.dopt) result.warnings.push("DOPT was not in this payload — fill it in Review (header).");
+  if(!result.mapped.length&&!result.unmapped.length) result.errors.push("Nothing in this payload could be mapped to a DEL field.");
+  result.data=data;
+  return result;
+}
+/* OCR-payload envelope from the OCR pipeline app:
+   {extraction:{field:value}, candidateSources:{"/field":[{value,spans}]},
+    fieldEvidence:{"/field":{quote,location}}}.
+   The extraction value is the matched passage (or a status word).
+   fieldEvidence gives the citation and the quoted passage. */
+function delImportOcrEnvelope(payload,opts,result){
+  var sourceType=opts.sourceType||"OCR payload";
+  var sourceLabel=opts.sourceLabel||sourceType;
+  var savedMappings=opts.savedMappings||{};
+  var data=delEmptySkeleton(sourceLabel);
+  var extraction=payload.extraction||{};
+  var cand=payload.candidateSources||{};
+  var evid=payload.fieldEvidence||{};
+  Object.keys(extraction).forEach(function(key){
+    var normKey=delFlexNormKey(key);
+    var target=delFlexResolveTarget(normKey,normKey,savedMappings);
+    if(!target){ result.unmapped.push({path:"extraction."+key,value:extraction[key],reason:"no matching DEL field — map it in Review or ignore it"}); return; }
+    if(DEL_FLEX_HEADER_TARGETS[target]){
+      var v=extraction[key];
+      if(DEL_FLEX_HEADER_TARGETS[target].kind==="date"){
+        var nd=delFlexNormalizeDate(v);
+        if(nd!==null){ data.planMetadata[target]=nd; result.mapped.push({path:"extraction."+key,target:target,value:nd}); }
+        else result.unmapped.push({path:"extraction."+key,value:v,reason:"date not recognised"});
+      } else if(!delFlexIsEmpty(v)){
+        data.planMetadata[target]=String(v).trim();
+        result.mapped.push({path:"extraction."+key,target:target,value:String(v).trim()});
+      }
+      return;
+    }
+    var el=delElementByField(data,target);
+    if(!el){ result.unmapped.push({path:"extraction."+key,value:extraction[key],reason:"no such element in the DEL"}); return; }
+    var val=extraction[key];
+    var ev=evid["/"+target]||evid[target]||null;
+    var cs=cand["/"+target]||cand[target]||null;
+    var quote=ev&&ev.quote?ev.quote:(cs&&cs.length&&cs[0].value?cs[0].value:(typeof val==="string"?val:null));
+    var loc=ev&&ev.location?(typeof ev.location==="string"?ev.location:(ev.location.page?("p"+ev.location.page):sourceLabel)):sourceLabel;
+    if(typeof val==="string"&&DEL_STATUSES.indexOf(val)>=0){
+      el.status=val;
+      if((ev&&ev.quote)||(cs&&cs.length)) el.match={concept:el.description,passage:quote,location:loc};
+      if(ev) el.citation={document:sourceLabel,page:(ev.location&&ev.location.page)||null,section:(ev.location&&ev.location.section)||null,imageViewerDocumentNumber:null};
+      result.mapped.push({path:"extraction."+key,target:target,value:val});
+      return;
+    }
+    if(delFlexIsEmpty(val)&&!quote){ result.unmapped.push({path:"extraction."+key,value:val,reason:"empty value and no evidence"}); return; }
+    el.status="present";
+    el.primarySource=sourceLabel;
+    el.citation={document:sourceLabel,page:(ev&&ev.location&&ev.location.page)||null,section:(ev&&ev.location&&ev.location.section)||null,imageViewerDocumentNumber:null};
+    if(quote) el.match={concept:el.description,passage:quote,location:loc};
+    el.audit=["OCR payload · extraction."+key];
+    result.mapped.push({path:"extraction."+key,target:target,value:typeof val==="string"?val:"(evidence)"});
+  });
+  if(!data.planMetadata.planName) result.warnings.push("planName was not in this payload — fill it in Review (header).");
+  if(!data.planMetadata.caseNumber) result.warnings.push("caseNumber was not in this payload — fill it in Review (header).");
+  if(!data.planMetadata.dopt) result.warnings.push("DOPT was not in this payload — fill it in Review (header).");
+  if(!result.mapped.length&&!result.unmapped.length) result.errors.push("Nothing in this payload could be mapped to a DEL field.");
+  result.data=data;
+  return result;
+}
+/* Is this payload a PARTIAL DEL payload (only some elements)? It has an
+   elements array but is not a full DEL JSON: either the header is
+   absent, or elements covers fewer than all 56 fields. A full DEL JSON
+   is NOT partial — it goes through the strict path. */
+function delIsPartialDelJson(d){
+  if(!d||typeof d!=="object"||Array.isArray(d)) return false;
+  if(!Array.isArray(d.elements)||!d.elements.length) return false;
+  var hasMeta=d.planMetadata&&typeof d.planMetadata==="object";
+  var known=d.elements.filter(function(el){ return el&&DEL_ELEMENT_FIELDS.indexOf(el.field)>=0; }).length;
+  if(hasMeta&&known>=DEL_ELEMENT_FIELDS.length) return false;
+  return true;
+}
+function validatePartialDelElement(el,where){
+  var errs=[];
+  if(!el||typeof el!=="object"||Array.isArray(el)){ errs.push(where+": not an object."); return errs; }
+  if(typeof el.field!=="string"||!el.field) errs.push(where+": field is required.");
+  if(DEL_STATUSES.indexOf(el.status)<0) errs.push(where+": status must be present, notApplicable, missing, ambiguous, or conditional.");
+  if(el.status==="conditional"&&(!el.condition||typeof el.condition!=="string")) errs.push(where+": conditional needs a condition.");
+  if(el.status==="present"&&(!el.primarySource||typeof el.primarySource!=="string")) errs.push(where+": present needs a primarySource.");
+  if(el.status==="present"&&(!el.citation||typeof el.citation!=="object"||!el.citation.document)) errs.push(where+": present needs a citation (document, page, section).");
+  return errs;
+}
+/* Merge a partial DEL payload into the data already loaded. A partial
+   payload only FILLS slots that are still missing. Rules, all reported:
+   - Every provided element is validated; one invalid element refuses
+     the whole payload.
+   - A payload element fills a slot only when that slot is currently
+     "missing". A payload element for a slot that already has a value
+     (present / notApplicable / ambiguous / conditional) is NOT
+     overwritten — recorded as ignored and shown in Review.
+   - A payload "missing" element for a slot that already has a value is
+     a placeholder — skipped silently.
+   - An ambiguous slot in the loaded data is never auto-filled.
+   - Unknown fields are ignored and reported, never dropped silently.
+   - Header keys (planMetadata) in the payload are ignored — the header
+     is already set; this import only fills elements.
+   Returns {ok, data, filled, ignored, errors, report}. On refusal
+   (ok false) data is null and the loaded data is untouched. */
+function mergePartialDelJson(current,payload){
+  var result={ok:false,data:null,filled:[],ignored:[],errors:[],report:[]};
+  if(!current||typeof current!=="object"){ result.errors.push("No DEL data is loaded to merge into."); return result; }
+  if(!payload||typeof payload!=="object"||Array.isArray(payload)){ result.errors.push("The partial payload is not an object."); return result; }
+  if(!Array.isArray(payload.elements)||!payload.elements.length){ result.errors.push("The partial payload has no elements array."); return result; }
+  var data=JSON.parse(JSON.stringify(current));
+  if(!Array.isArray(data.elements)) data.elements=[];
+  var filled=[], ignored=[], errors=[], unknownFields=[], headerKeys=[];
+  if(payload.planMetadata) headerKeys.push("planMetadata");
+  if(payload.sources) headerKeys.push("sources");
+  payload.elements.forEach(function(el){
+    if(!el||typeof el!=="object"){ errors.push("elements entry is not an object."); return; }
+    if(DEL_ELEMENT_FIELDS.indexOf(el.field)<0){ unknownFields.push(el.field||"(no field)"); return; }
+    var errs=validatePartialDelElement(el,"elements."+el.field);
+    if(errs.length){ errors.push.apply(errors,errs); return; }
+    var cur=delElementByField(data,el.field);
+    if(!cur){
+      var base=DEL_FIELD_MAP[el.field];
+      cur={field:el.field,description:base?base.description:el.field,reasonRequired:base?base.reasonRequired:"",requiredFor:{},primarySource:null,secondarySource:null,status:"missing",condition:null,citation:null,match:null,note:null,audit:[]};
+      cur.requiredFor[DEL_GROUP_A]=false; cur.requiredFor[DEL_GROUP_B]=false;
+      data.elements.push(cur);
+    }
+    if(cur.status==="missing"){
+      if(el.status==="missing") return;
+      var idx=data.elements.indexOf(cur);
+      data.elements[idx]=JSON.parse(JSON.stringify(el));
+      if(!data.elements[idx].description&&DEL_FIELD_MAP[el.field]) data.elements[idx].description=DEL_FIELD_MAP[el.field].description;
+      if(!data.elements[idx].reasonRequired&&DEL_FIELD_MAP[el.field]) data.elements[idx].reasonRequired=DEL_FIELD_MAP[el.field].reasonRequired;
+      filled.push({field:el.field,value:el.status});
+    } else {
+      if(el.status==="missing") return;
+      ignored.push({field:el.field,reason:"already "+cur.status+" — not overwritten",value:el.status});
+    }
+  });
+  if(errors.length){ result.errors=errors; return result; }
+  result.ok=true; result.data=data; result.filled=filled; result.ignored=ignored;
+  var report=[];
+  if(filled.length) report.push("Partial import: filled "+filled.length+" missing element(s): "+filled.map(function(f){return f.field;}).join(", ")+". Review and approve each one.");
+  else report.push("Partial import: nothing new to fill — every listed element was already filled, or the payload found nothing.");
+  if(ignored.length) report.push("Ignored "+ignored.length+" value(s) the app already had (never overwritten): "+ignored.map(function(g){return g.field+" ("+g.reason+")";}).join(", ")+".");
+  if(unknownFields.length) report.push("Ignored unknown field(s): "+unknownFields.join(", ")+" — not one of the 56 DEL fields.");
+  if(headerKeys.length) report.push("Header key(s) in the payload were ignored ("+headerKeys.join(", ")+") — the header is already set; this import only fills elements.");
+  result.report=report;
+  return result;
+}
+var DEL_FLEX_MAPPINGS_KEY="del-flex-mappings";
+function delLoadSavedMappings(storage){
+  try{
+    var raw=storage?storage.getItem(DEL_FLEX_MAPPINGS_KEY):null;
+    if(!raw) return {};
+    var parsed=JSON.parse(raw);
+    return parsed&&typeof parsed==="object"?parsed:{};
+  }catch(e){ return {}; }
+}
+function delSaveMapping(storage,normKey,target){
+  var map=delLoadSavedMappings(storage);
+  map[normKey]=target;
+  try{ if(storage) storage.setItem(DEL_FLEX_MAPPINGS_KEY,JSON.stringify(map)); }catch(e){}
+  return map;
+}
+/* localStorage can throw on access alone (opaque origin, blocked storage).
+   Never let that kill the script: every access goes through here. */
+function delSafeStorage(){
+  try{ return (typeof localStorage!=="undefined")?localStorage:null; }
+  catch(e){ return null; }
+}
+
+/* ---- minimal stored ZIP writer (no compression) + CRC-32 ----
+   Adapted from the R5 generator's writer (same pattern). */
+var DEL_CRC_TABLE=(function(){var t=[],c,i,k;for(i=0;i<256;i++){c=i;for(k=0;k<8;k++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);t[i]=c>>>0;}return t;})();
+function delCrc32(bytes){var c=0xFFFFFFFF,i;for(i=0;i<bytes.length;i++)c=DEL_CRC_TABLE[(c^bytes[i])&0xFF]^(c>>>8);return (c^0xFFFFFFFF)>>>0;}
+function delUtf8Bytes(s){return new TextEncoder().encode(s);}
+function delU16(n){return [n&0xFF,(n>>8)&0xFF];}
+function delU32(n){return [n&0xFF,(n>>8)&0xFF,(n>>16)&0xFF,(n>>24)&0xFF];}
+function delPushBytes(out,arr){
+  var CH=8192,i;
+  for(i=0;i<arr.length;i+=CH) out.push.apply(out,Array.prototype.slice.call(arr,i,i+CH));
+}
+function delBuildZip(files){
+  var out=[],central=[],offset=0,now=new Date();
+  var dosTime=((now.getHours()<<11)|(now.getMinutes()<<5)|(now.getSeconds()>>1))&0xFFFF;
+  var dosDate=(((now.getFullYear()-1980)<<9)|((now.getMonth()+1)<<5)|now.getDate())&0xFFFF;
+  files.forEach(function(f){
+    var name=delUtf8Bytes(f.name), data=(typeof f.data==="string")?delUtf8Bytes(f.data):f.data, crc=delCrc32(data);
+    out.push.apply(out,[0x50,0x4B,0x03,0x04].concat(delU16(20),delU16(0),delU16(0),delU16(dosTime),delU16(dosDate),delU32(crc),delU32(data.length),delU32(data.length),delU16(name.length),delU16(0)));
+    delPushBytes(out,name); delPushBytes(out,data);
+    central.push({name:name,crc:crc,size:data.length,offset:offset});
+    offset+=30+name.length+data.length;
+  });
+  var cdStart=offset;
+  central.forEach(function(c){
+    out.push.apply(out,[0x50,0x4B,0x01,0x02].concat(delU16(20),delU16(20),delU16(0),delU16(0),delU16(dosTime),delU16(dosDate),delU32(c.crc),delU32(c.size),delU32(c.size),delU16(c.name.length),delU16(0),delU16(0),delU16(0),delU16(0),delU32(0),delU32(c.offset)));
+    delPushBytes(out,c.name);
+    offset+=46+c.name.length;
+  });
+  var cdSize=offset-cdStart;
+  out.push.apply(out,[0x50,0x4B,0x05,0x06].concat(delU16(0),delU16(0),delU16(central.length),delU16(central.length),delU32(cdSize),delU32(cdStart),delU16(0)));
+  return new Uint8Array(out);
+}
+
+/* ---- .docx (OOXML) builder: header, sources, elements tables ----
+   Reproduces the template structure exactly: 3 tables, same dimensions,
+   same labels. One paragraph per line in a cell, so a value and its
+   citation code render on separate lines. */
+function delEscXml(s){
+  return String(s===null||s===undefined?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function delXmlPara(text,bold,size){
+  var lines=String(text===null||text===undefined?"":text).split("\n");
+  var r=lines.map(function(line){
+    return "<w:r><w:rPr>"+(bold?"<w:b/>":"")+(size?'<w:sz w:val="'+size+'"/>':"")+"</w:rPr><w:t xml:space=\"preserve\">"+delEscXml(line)+"</w:t></w:r>";
+  }).join("<w:r><w:br/></w:r>");
+  return "<w:p>"+r+"</w:p>";
+}
+function delXmlCell(text,bold){
+  var lines=String(text===null||text===undefined?"":text).split("\n");
+  return "<w:tc><w:tcPr><w:tcW w:w=\"0\" w:type=\"auto\"/></w:tcPr>"+lines.map(function(line){return delXmlPara(line,!!bold,22);}).join("")+"</w:tc>";
+}
+function delXmlTable(rows,cols){
+  var grid="",i;
+  for(i=0;i<cols;i++) grid+="<w:gridCol w:w=\"1800\"/>";
+  var body=rows.map(function(r){
+    return "<w:tr>"+r.map(function(c){return delXmlCell(c.text,c.bold);}).join("")+"</w:tr>";
+  }).join("");
+  return "<w:tbl><w:tblPr><w:tblW w:w=\"0\" w:type=\"auto\"/><w:tblBorders><w:top w:val=\"single\" w:sz=\"4\"/><w:left w:val=\"single\" w:sz=\"4\"/><w:bottom w:val=\"single\" w:sz=\"4\"/><w:right w:val=\"single\" w:sz=\"4\"/><w:insideH w:val=\"single\" w:sz=\"4\"/><w:insideV w:val=\"single\" w:sz=\"4\"/></w:tblBorders></w:tblPr><w:tblGrid>"+grid+"</w:tblGrid>"+body+"</w:tbl>";
+}
+function delFmt(v){ if(v===null||v===undefined||v==="") return ""; return String(v); }
+function delHeaderPlanNameCell(planName,planNumber){
+  var n=delFmt(planName);
+  return planNumber? n+" \u2014 Plan No. "+planNumber : n;
+}
+/* Citation code for the primary-source cell: the match location when
+   there is one ("D1 §2.1 p3"), else built from the citation object. */
+function delCitationCode(el,data){
+  if(el.match&&el.match.location) return el.match.location;
+  var c=el.citation;
+  if(!c||!c.document) return "";
+  var loc=c.document;
+  if(c.section) loc+=" \u00a7"+c.section;
+  if(c.page!==null&&c.page!==undefined&&c.page!=="") loc+=" p"+c.page;
+  return loc;
+}
+/* One required-for cell. Conditional shows the condition; notApplicable
+   shows N/A; missing shows "— missing —"; present shows Yes/blank. */
+function delGroupCell(el,group){
+  if(el.status==="notApplicable") return "N/A";
+  if(el.status==="missing") return "\u2014 missing \u2014";
+  var req=el.requiredFor&&el.requiredFor[group];
+  if(el.status==="conditional"){
+    if(!req) return "";
+    var c=el.condition||"";
+    if(!/^if\s/i.test(c)) c="If "+c;
+    return c.charAt(0).toUpperCase()+c.slice(1);
+  }
+  return req?"Yes":"";
+}
+function delHeaderTableXml(d){
+  var m=d.planMetadata, C=function(t,b){return {text:t,bold:!!b};};
+  var div="Processing Division: "+(m.processingDivision||"ASD-D");
+  var srcNames=(m.sourceDocuments||[]).join("; ");
+  return delXmlTable([
+    [C("Data Elements and Sources List",1),C("Data Elements and Sources List",1)],
+    [C("EIN/PN:",1),C(delFmt(m.einPn))],
+    [C("PBGC Case Number:",1),C(delFmt(m.caseNumber))],
+    [C("Date of Plan Termination:",1),C(delFmt(m.dopt))],
+    [C("Date of Trusteeship:",1),C(delFmt(m.dotr))],
+    [C("Plan Name:",1),C(delHeaderPlanNameCell(m.planName,m.planNumber))],
+    [C(div,1),C(div,1)],
+    [C("List of data elements prepared by: "+delFmt(m.preparedBy),1),C("Date Prepared: "+delFmt(m.datePrepared))],
+    [C("Source documents identified by:  "+srcNames),C("")],
+    [C("Reviewed by:    "+delFmt(m.reviewedBy)),C("Date Reviewed: "+delFmt(m.dateReviewed))],
+    [C("Narrative: "+delFmt(m.narrative)),C("Narrative: ")]
+  ],2);
+}
+function delSourcesTableXml(d){
+  var C=function(t,b){return {text:t,bold:!!b};};
+  var rows=[[C("SOURCES LIST:",1),C("Hard copy (H) or electronic (E)",1),C("Used (U) or Not used (NU)",1)]];
+  (d.sources||[]).forEach(function(s){
+    rows.push([C(delFmt(s.name)),C(delFmt(s.format)),C(delFmt(s.used))]);
+  });
+  while(rows.length<5) rows.push([C(""),C(""),C("")]);
+  return delXmlTable(rows,3);
+}
+function delElementRowXml(el,groups,d){
+  var C=function(t,b){return {text:t,bold:!!b};};
+  var reason=delFmt(el.reasonRequired);
+  if(el.status==="ambiguous"&&el.note) reason+=(reason?"\n":"")+"[AMBIGUOUS: "+el.note+"]";
+  var prim=delFmt(el.primarySource);
+  var code=delCitationCode(el,d);
+  if(code) prim+=(prim?"\n":"")+code;
+  var cells=[C(delFmt(el.field),1),C(delFmt(el.description)),C(reason)];
+  groups.forEach(function(g){ cells.push(C(delGroupCell(el,g))); });
+  cells.push(C(prim),C(delFmt(el.secondarySource)));
+  return cells;
+}
+function delElementsTableXml(d){
+  var groups=(d.participantGroups&&d.participantGroups.length)?d.participantGroups:[DEL_GROUP_A,DEL_GROUP_B];
+  var C=function(t,b){return {text:t,bold:!!b};};
+  var cols=5+groups.length;
+  var groupHeader="Required for \n(Insert Column For each Defined Group of Participants)";
+  var row0=[C("PBGC Access \nData Element",1),C("Description",1),C("Reason Required",1)];
+  groups.forEach(function(){ row0.push(C(groupHeader,1)); });
+  row0.push(C("Primary Source",1),C("Secondary Source",1));
+  var row1=[C("PBGC Access \nData Element",1),C("Description",1),C("Reason Required",1)];
+  groups.forEach(function(g){ row1.push(C(g,1)); });
+  row1.push(C("Primary Source",1),C("Secondary Source",1));
+  var rows=[row0,row1];
+  /* Template order first (the 56), then any extra elements in the
+     JSON's order — the list is extensible to the full Input universe. */
+  var ordered=[];
+  DEL_FIELDS.forEach(function(f){
+    for(var i=0;i<d.elements.length;i++) if(d.elements[i].field===f[0]) ordered.push(d.elements[i]);
+  });
+  d.elements.forEach(function(el){
+    if(ordered.indexOf(el)<0) ordered.push(el);
+  });
+  ordered.forEach(function(el){ rows.push(delElementRowXml(el,groups,d)); });
+  return delXmlTable(rows,cols);
+}
+function delBuildDocumentXml(d){
+  var parts=[];
+  parts.push('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>');
+  parts.push('<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>');
+  parts.push(delXmlPara("Data Elements and Sources List",true,36));
+  parts.push(delHeaderTableXml(d));
+  parts.push(delXmlPara("",false,22));
+  parts.push(delSourcesTableXml(d));
+  parts.push(delXmlPara("",false,22));
+  parts.push(delElementsTableXml(d));
+  parts.push(delXmlPara("",false,22));
+  parts.push(delXmlPara("Generated by the PBGC DEL Generator from approved DEL JSON. Deterministic generation; no LLM in the generation path. Audit: every field above carries its source and citation.",false,22));
+  parts.push('<w:sectPr><w:pgSz w:w="12240" w:h="15840"/></w:sectPr>');
+  parts.push("</w:body></w:document>");
+  return parts.join("");
+}
+var DEL_CONTENT_TYPES='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>';
+var DEL_RELS='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>';
+var DEL_STYLES='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:sz w:val="22"/></w:rPr></w:rPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/></w:style><w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="heading 1"/><w:basedOn w:val="Normal"/><w:qFormat/><w:rPr><w:b/><w:sz w:val="36"/></w:rPr></w:style><w:style w:type="paragraph" w:styleId="Heading2"><w:name w:val="heading 2"/><w:basedOn w:val="Normal"/><w:qFormat/><w:rPr><w:b/><w:sz w:val="28"/></w:rPr></w:style></w:styles>';
+function delBuildDocxBytes(d){
+  return delBuildZip([
+    {name:"[Content_Types].xml", data:DEL_CONTENT_TYPES},
+    {name:"_rels/.rels", data:DEL_RELS},
+    {name:"word/document.xml", data:delBuildDocumentXml(d)},
+    {name:"word/styles.xml", data:DEL_STYLES}
+  ]);
+}
+
+/* ---- UI state, rendering, actions ---- */
+var DEL_STEPS=["Download prompt","Upload JSON","Review","Generate","Download"];
+var delState={
+  data:null, decisions:{}, step:0, welcome:true, ranking:false,
+  rankFilter:"all", audit:[], unmapped:[], conflicts:[], warnings:[],
+  importReport:null, generated:null, editingField:null,
+  savedMappings:delLoadSavedMappings(delSafeStorage())
+};
+function delEscHtml(s){
+  return String(s===null||s===undefined?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function delAudit(msg){
+  var d=new Date();
+  var stamp=d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)+" "+("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);
+  delState.audit.push(stamp+" — "+msg);
+}
+function delHeaderMissing(){
+  if(!delState.data) return ["plan name","case number","DOPT"];
+  var m=delState.data.planMetadata, miss=[];
+  if(!m.planName) miss.push("plan name");
+  if(!m.caseNumber) miss.push("case number");
+  if(!m.dopt) miss.push("DOPT");
+  return miss;
+}
+function delNeedsReview(el){
+  if(!el) return false;
+  if(el.status==="notApplicable") return false;
+  var d=delState.decisions[el.field];
+  return d!=="approved"&&d!=="edited";
+}
+function delUndecidedCount(){
+  if(!delState.data) return 0;
+  var n=0; delState.data.elements.forEach(function(el){ if(delNeedsReview(el)) n++; });
+  return n;
+}
+function delStepUnlocked(n){
+  if(n===0||n===1) return true;
+  if(!delState.data) return false;
+  if(n===2) return true;
+  if(n===3) return delHeaderMissing().length===0&&delUndecidedCount()===0;
+  if(n===4) return !!delState.generated;
+  return false;
+}
+function delGoToStep(n){
+  if(!delStepUnlocked(n)) return;
+  delState.step=n; delState.editingField=null; delRender();
+  if(typeof document!=="undefined"){
+    var sec=document.getElementById("step-"+n);
+    if(sec&&sec.scrollIntoView) sec.scrollIntoView({behavior:"smooth",block:"start"});
+  }
+}
+function delStepperHtml(){
+  return DEL_STEPS.map(function(label,i){
+    var cls="step-item";
+    if(i===delState.step) cls+=" current";
+    else if(delStepUnlocked(i)) cls+=" done";
+    else cls+=" locked";
+    var inner=(i+1)+". "+label+(delStepUnlocked(i)?"":" (locked)");
+    if(delStepUnlocked(i)) return '<li class="'+cls+'"><button type="button" data-action="goto-step" data-step="'+i+'">'+delEscHtml(inner)+"</button></li>";
+    return '<li class="'+cls+'">'+delEscHtml(inner)+"</li>";
+  }).join("");
+}
+function delDownloadBlob(blob,name){
+  if(typeof URL==="undefined"||typeof document==="undefined") return;
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a");
+  a.href=url; a.download=name; document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(url); if(a.parentNode) a.parentNode.removeChild(a); },500);
+}
+function delCanShareFile(){
+  try{
+    if(typeof navigator==="undefined"||!navigator.share||!navigator.canShare) return false;
+    return navigator.canShare({files:[new File(["x"],"x.docx",{type:"application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"})]});
+  }catch(e){ return false; }
+}
+function delPromptCardHtml(){
+  var h='<h2>Step 1 — Download the scraper prompt</h2>';
+  h+='<p>The prompt tells an LLM what to find in the plan documents, and how to return it as JSON.</p>';
+  h+='<p><button type="button" class="primary" data-action="download-prompt">Download the scraper prompt</button></p>';
+  h+='<p class="small">Feed the prompt and the plan documents to Copilot (office) or any LLM (home). The LLM returns JSON. Upload it in Step 2.</p>';
+  h+='<p class="small">The prompt covers the template&rsquo;s 56 fields. The full Input universe (271 fields) comes in grouped prompts later.</p>';
+  h+='<p><button type="button" data-action="demo">Try the demo case instead</button> <button type="button" data-action="goto-step" data-step="1">Go to Upload</button></p>';
+  return h;
+}
+function delImportReportHtml(){
+  var r=delState.importReport;
+  if(!r) return "";
+  var h='<div class="report"><h3>Import report</h3><ul>';
+  if(r.kind==="del") h+="<li>Full DEL JSON accepted — "+r.mapped+" elements.</li>";
+  else if(r.kind==="partial"){
+    h+="<li>Partial import — "+r.filled+" missing element(s) filled, "+r.ignored+" ignored (already had a value).</li>";
+    (r.report||[]).forEach(function(line){ h+="<li>"+delEscHtml(line)+"</li>"; });
+  } else {
+    h+="<li>Mapped "+r.mapped+" value(s).</li>";
+    if(r.unmapped) h+="<li>"+r.unmapped+" key(s) not mapped — see Review.</li>";
+    if(r.conflicts) h+="<li>"+r.conflicts+" conflict(s) — marked ambiguous.</li>";
+    (r.warnings||[]).forEach(function(w){ h+="<li>"+delEscHtml(w)+"</li>"; });
+  }
+  h+="</ul></div>";
+  return h;
+}
+function delUploadBoxHtml(){
+  var h='<h2>Step 2 — Upload the JSON</h2>';
+  h+='<p>Upload the JSON the LLM returned, or paste it below. A flat JSON or an OCR payload also works.</p>';
+  h+='<p><label>JSON file <input type="file" id="del-file-input" accept=".json,application/json" onchange="delOnFileChosen(this)"></label></p>';
+  h+='<p><label>Or paste JSON here<br><textarea id="del-json-paste" rows="6" cols="60" placeholder="{ &quot;planMetadata&quot;: { ... }, &quot;elements&quot;: [ ... ] }"></textarea></label></p>';
+  h+='<p><button type="button" class="primary" data-action="import-paste">Import the pasted JSON</button> <button type="button" data-action="demo">Load the demo case</button></p>';
+  h+='<p class="small">A partial JSON only fills fields that are still missing. It never overwrites a value you already have.</p>';
+  h+=delImportReportHtml();
+  return h;
+}
+function delHeaderFormHtml(){
+  var m=delState.data.planMetadata;
+  function inp(name,label,val,req){
+    return '<label>'+label+(req?" *":"")+'<br><input type="text" data-meta="'+name+'" value="'+delEscHtml(val===null||val===undefined?"":val)+'"></label>';
+  }
+  var h='<h3>Header</h3><div class="header-form">';
+  h+=inp("planName","Plan name",m.planName,true);
+  h+=inp("planNumber","Plan number",m.planNumber,false);
+  h+=inp("caseNumber","Case number",m.caseNumber,true);
+  h+=inp("dopt","DOPT (YYYY-MM-DD)",m.dopt,true);
+  h+=inp("dotr","Date of Trusteeship",m.dotr,false);
+  h+=inp("einPn","EIN/PN",m.einPn,false);
+  h+=inp("preparedBy","Prepared by",m.preparedBy,false);
+  h+=inp("datePrepared","Date prepared",m.datePrepared,false);
+  h+=inp("reviewedBy","Reviewed by",m.reviewedBy,false);
+  h+=inp("dateReviewed","Date reviewed",m.dateReviewed,false);
+  h+='</div>';
+  h+='<p><label>Narrative<br><textarea data-meta="narrative" rows="2" cols="60">'+delEscHtml(m.narrative||"")+'</textarea></label></p>';
+  return h;
+}
+function delStatusBadge(status){
+  return '<span class="badge st-'+status+'">'+status+'</span>';
+}
+function delReviewRowHtml(el){
+  var dec=delState.decisions[el.field];
+  var h='<div class="review-row" data-field="'+delEscHtml(el.field)+'">';
+  h+='<div class="review-main"><strong>'+delEscHtml(el.field)+'</strong> '+delStatusBadge(el.status);
+  if(dec) h+=' <span class="badge dec-'+dec+'">'+dec+'</span>';
+  h+='<br><span class="small">'+delEscHtml(el.description)+'</span>';
+  h+='<br><span class="small">Why: '+delEscHtml(el.reasonRequired)+'</span>';
+  var gA=delGroupCell(el,DEL_GROUP_A), gB=delGroupCell(el,DEL_GROUP_B);
+  h+='<br><span class="small">'+delEscHtml(DEL_GROUP_A)+': '+delEscHtml(gA||"—")+' · '+delEscHtml(DEL_GROUP_B)+': '+delEscHtml(gB||"—")+'</span>';
+  if(el.primarySource) h+='<br><span class="small">Source: '+delEscHtml(el.primarySource)+(el.citation&&el.citation.document?" · "+delEscHtml(delCitationCode(el,delState.data)):"")+'</span>';
+  if(el.note) h+='<br><span class="small note">Note: '+delEscHtml(el.note)+'</span>';
+  h+='</div>';
+  h+='<div class="review-actions">';
+  h+='<button type="button" data-action="approve" data-field="'+delEscHtml(el.field)+'">Approve</button> ';
+  h+='<button type="button" data-action="edit" data-field="'+delEscHtml(el.field)+'">Edit</button> ';
+  h+='<button type="button" data-action="reject" data-field="'+delEscHtml(el.field)+'">Reject</button>';
+  h+='</div>';
+  if(delState.editingField===el.field){
+    h+='<div class="edit-form"><h4>Edit '+delEscHtml(el.field)+'</h4>';
+    h+='<p><label>Status<br><select id="del-edit-status">'+DEL_STATUSES.map(function(s){ return '<option value="'+s+'"'+(s===el.status?" selected":"")+'>'+s+'</option>'; }).join("")+'</select></label></p>';
+    h+='<p><label>Primary source<br><input type="text" id="del-edit-prim" value="'+delEscHtml(el.primarySource||"")+'"></label></p>';
+    h+='<p><label>Secondary source<br><input type="text" id="del-edit-sec" value="'+delEscHtml(el.secondarySource||"")+'"></label></p>';
+    h+='<p><label>Note<br><input type="text" id="del-edit-note" value="'+delEscHtml(el.note||"")+'"></label></p>';
+    h+='<p><button type="button" class="primary" data-action="save-edit" data-field="'+delEscHtml(el.field)+'">Save</button> <button type="button" data-action="cancel-edit">Cancel</button></p></div>';
+  }
+  h+='</div>';
+  return h;
+}
+function delUnmappedHtml(){
+  var list=delState.unmapped.filter(function(u){ return !u.applied&&!u.ignored; });
+  if(!list.length) return "";
+  var opts='<option value="">— choose a field —</option>';
+  Object.keys(DEL_FLEX_HEADER_TARGETS).forEach(function(k){ opts+='<option value="H:'+k+'">'+k+' (header)</option>'; });
+  DEL_ELEMENT_FIELDS.forEach(function(f){ opts+='<option value="E:'+f+'">'+f+'</option>'; });
+  var h='<div class="unmapped"><h3>Unmapped keys — not dropped</h3><p class="small">These keys did not match a DEL field. Pick a target, or ignore them.</p>';
+  list.forEach(function(u,i){
+    h+='<p><code>'+delEscHtml(u.path)+'</code> = <code>'+delEscHtml(String(u.value).slice(0,80))+'</code><br><span class="small">'+delEscHtml(u.reason)+'</span><br>';
+    h+='<select id="del-map-'+i+'">'+opts+'</select> ';
+    h+='<button type="button" data-action="apply-mapping" data-index="'+i+'">Apply</button> ';
+    h+='<button type="button" data-action="ignore-mapping" data-index="'+i+'">Ignore</button></p>';
+  });
+  h+='</div>';
+  return h;
+}
+function delReviewBoxHtml(){
+  if(!delState.data){
+    return '<h2>Step 3 — Review</h2><p>No data yet. Upload a JSON in Step 2, or load the demo case.</p><p><button type="button" class="primary" data-action="demo">Load the demo case</button></p>';
+  }
+  var miss=delHeaderMissing(), und=delUndecidedCount();
+  var h='<h2>Step 3 — Review</h2>';
+  h+=delHeaderFormHtml();
+  if(miss.length) h+='<p class="warn">Still needed for the header: '+miss.join(", ")+'.</p>';
+  if(und) h+='<p class="warn">'+und+' field(s) still need a decision (approve, edit, or reject).</p>';
+  else h+='<p class="ok">All fields decided. You can generate.</p>';
+  h+='<p><button type="button" data-action="approve-all">Approve all</button> <button type="button" data-action="approve-found">Approve found only</button></p>';
+  h+=delUnmappedHtml();
+  h+='<div class="review-list">';
+  delState.data.elements.forEach(function(el){ h+=delReviewRowHtml(el); });
+  h+='</div>';
+  h+='<p><button type="button" class="primary" data-action="goto-step" data-step="3">Continue to Generate</button></p>';
+  return h;
+}
+function delGenerateBoxHtml(){
+  var miss=delHeaderMissing(), und=delUndecidedCount();
+  var h='<h2>Step 4 — Generate</h2>';
+  if(!delState.data){ h+='<p>No data yet. Upload a JSON in Step 2, or load the demo case.</p>'; return h; }
+  if(miss.length) h+='<p class="warn">Header still needs: '+miss.join(", ")+'.</p>';
+  if(und) h+='<p class="warn">'+und+' field(s) still need a decision in Review.</p>';
+  if(!miss.length&&!und){
+    h+='<p>Ready. The app writes the DEL Word document from the approved data. No LLM is involved in this step.</p>';
+    h+='<p><button type="button" class="primary" data-action="generate">Generate the DEL.docx</button></p>';
+  } else {
+    h+='<p><button type="button" data-action="goto-step" data-step="2">Back to Review</button></p>';
+  }
+  return h;
+}
+function delDownloadBoxHtml(){
+  var h='<h2>Step 5 — Download</h2>';
+  if(!delState.generated){ h+='<p>Nothing generated yet. Go to Step 4.</p><p><button type="button" data-action="goto-step" data-step="3">Go to Generate</button></p>'; return h; }
+  h+='<p>Your DEL Word document is ready: <strong>'+delEscHtml(delState.generated.name)+'</strong></p>';
+  h+='<p><button type="button" class="primary" data-action="download-docx">Download the DEL.docx</button></p>';
+  if(delCanShareFile()) h+='<p><button type="button" data-action="share-docx">Share the .docx…</button></p>';
+  else h+='<p class="small">On iPhone, the file lands in Files → Downloads. If you cannot find it, use the Share button when it appears.</p>';
+  h+='<p><button type="button" data-action="download-audit">Download the audit log</button> <button type="button" data-action="start-over">Start over</button></p>';
+  return h;
+}
+function delRankingHtml(){
+  var data=delState.data||DEMO_DEL_JSON;
+  var res=delRankElements(data.elements);
+  var f=delState.rankFilter;
+  var rows=[];
+  res.ranked.forEach(function(r){ rows.push(r); });
+  res.unmatched.forEach(function(el){ rows.push({element:el, passage:"", score:0, matched:[], detail:null}); });
+  rows=rows.filter(function(r){
+    if(f==="low") return r.score>0&&r.score<50;
+    if(f==="unmatched") return r.score===0;
+    return true;
+  });
+  var h='<table class="rank"><thead><tr><th>Field</th><th>Matched concept + location</th><th>Score</th></tr></thead><tbody>';
+  if(!rows.length) h+='<tr><td colspan="3">Nothing in this filter.</td></tr>';
+  rows.forEach(function(r){
+    var el=r.element;
+    var best=r.passage&&typeof r.passage==="object"?r.passage:null;
+    var concept=(best&&best.concept)||(el.match&&el.match.concept)||el.description;
+    var loc=(best&&best.location)||(el.match&&el.match.location)||"— no match —";
+    var passage=(best&&best.text)||((el.match&&el.match.passage)||"");
+    var differs=!!(best&&el.match&&el.match.passage&&best.text!==el.match.passage);
+    h+='<tr><td><strong>'+delEscHtml(el.field)+'</strong><br><span class="small">'+delStatusBadge(el.status)+'</span></td>';
+    h+='<td>'+delEscHtml(concept)+'<br><span class="small">'+delEscHtml(loc)+'</span>';
+    if(passage) h+='<br><span class="small">“'+delEscHtml(passage.slice(0,120))+'”</span>';
+    if(differs) h+='<br><span class="small">Best match differs from the proposed passage — check it.</span>';
+    h+='</td>';
+    h+='<td><strong>'+r.score+'</strong>/100';
+    if(r.matched&&r.matched.length) h+='<br><span class="small">'+delEscHtml(r.matched.slice(0,8).join(", "))+'</span>';
+    h+='</td></tr>';
+  });
+  h+='</tbody></table>';
+  h+='<p class="small">'+rows.length+' of '+(res.ranked.length+res.unmatched.length)+' fields shown. The score is a plain count of shared words and phrases — it ranks, it never decides. Check the low scores first.</p>';
+  return h;
+}
+function delRender(){
+  if(typeof document==="undefined") return;
+  var welcome=document.getElementById("welcome");
+  if(welcome) welcome.style.display=delState.welcome?"":"none";
+  var navDel=document.getElementById("nav-del"), navM=document.getElementById("nav-matches");
+  var viewDel=document.getElementById("view-del"), viewM=document.getElementById("view-matches");
+  if(navDel) navDel.className="tab"+(delState.ranking?"":" current");
+  if(navM) navM.className="tab"+(delState.ranking?" current":"");
+  if(viewDel) viewDel.hidden=!!delState.ranking;
+  if(viewM) viewM.hidden=!delState.ranking;
+  if(delState.ranking){
+    var mt=document.getElementById("matches-table");
+    if(mt) mt.innerHTML=delRankingHtml();
+    return;
+  }
+  var stepper=document.getElementById("stepper");
+  if(stepper) stepper.innerHTML=delStepperHtml();
+  for(var i=0;i<5;i++){
+    var sec=document.getElementById("step-"+i);
+    if(sec) sec.style.display=(i===delState.step)?"":"none";
+  }
+  var pc=document.getElementById("prompt-card"); if(pc) pc.innerHTML=delPromptCardHtml();
+  var ub=document.getElementById("upload-box"); if(ub) ub.innerHTML=delUploadBoxHtml();
+  var rb=document.getElementById("review-box"); if(rb) rb.innerHTML=delReviewBoxHtml();
+  var gb=document.getElementById("generate-box"); if(gb) gb.innerHTML=delGenerateBoxHtml();
+  var db=document.getElementById("download-box"); if(db) db.innerHTML=delDownloadBoxHtml();
+}
+function delSyncHeaderFromDom(){
+  if(typeof document==="undefined"||!delState.data) return;
+  var inputs=document.querySelectorAll("[data-meta]");
+  for(var i=0;i<inputs.length;i++){
+    var name=inputs[i].getAttribute("data-meta");
+    if(name) delState.data.planMetadata[name]=inputs[i].value;
+  }
+}
+function delLoadDemo(){
+  delState.data=buildDemoData();
+  delState.decisions={}; delState.unmapped=[]; delState.conflicts=[]; delState.warnings=[];
+  delState.importReport={kind:"demo",mapped:56,unmapped:0,conflicts:0,warnings:[]};
+  delState.generated=null; delState.editingField=null;
+  delAudit("Demo case loaded: Riverbend Manufacturing Pension Plan, case 98765400.");
+  delState.step=2; delRender();
+}
+function delImportText(text,label){
+  var parsed;
+  try{ parsed=JSON.parse(text); }
+  catch(e){ delState.importReport={kind:"error",report:["The JSON could not be read: "+e.message]}; delRender(); return; }
+  if(delIsDelJson(parsed)){
+    var errs=validateDelJson(parsed);
+    if(errs.errors.length){ delState.importReport={kind:"error",report:errs.errors}; delRender(); return; }
+    delState.data=parsed; delState.decisions={}; delState.unmapped=[]; delState.conflicts=[]; delState.warnings=[];
+    delState.importReport={kind:"del",mapped:parsed.elements.length,unmapped:0,conflicts:0,warnings:[]};
+    delAudit("Full DEL JSON imported from "+label+" — "+parsed.elements.length+" elements.");
+    delState.generated=null; delState.step=2; delRender(); return;
+  }
+  if(delIsPartialDelJson(parsed)){
+    if(!delState.data){ delState.importReport={kind:"error",report:["This is a partial JSON. Load a full DEL JSON first, then import a partial one."]}; delRender(); return; }
+    var m=mergePartialDelJson(delState.data,parsed);
+    if(!m.ok){ delState.importReport={kind:"error",report:m.errors}; delRender(); return; }
+    delState.data=m.data;
+    delState.importReport={kind:"partial",filled:m.filled.length,ignored:m.ignored.length,report:m.report};
+    delAudit("Partial JSON merged from "+label+" — "+m.filled.length+" filled, "+m.ignored.length+" ignored.");
+    delState.step=2; delRender(); return;
+  }
+  var r=importFlexDelJson(parsed,{sourceType:"JSON payload",sourceLabel:label||"JSON payload",savedMappings:delState.savedMappings});
+  if(r.errors.length){ delState.importReport={kind:"error",report:r.errors}; delRender(); return; }
+  delState.data=r.data; delState.decisions={}; delState.unmapped=r.unmapped; delState.conflicts=r.conflicts; delState.warnings=r.warnings;
+  delState.importReport={kind:"flex",mapped:r.mapped.length,unmapped:r.unmapped.length,conflicts:r.conflicts.length,warnings:r.warnings};
+  delAudit("Flexible JSON imported from "+label+" — "+r.mapped.length+" mapped, "+r.unmapped.length+" unmapped, "+r.conflicts.length+" conflicts.");
+  delState.generated=null; delState.step=2; delRender();
+}
+function delOnFileChosen(input){
+  if(!input||!input.files||!input.files.length) return;
+  var file=input.files[0];
+  var reader=new FileReader();
+  reader.onload=function(){ delImportText(String(reader.result),file.name); };
+  reader.onerror=function(){ delState.importReport={kind:"error",report:["Could not read the file."]}; delRender(); };
+  reader.readAsText(file);
+}
+function delBulkApprove(foundOnly){
+  if(!delState.data) return;
+  var n=0;
+  delState.data.elements.forEach(function(el){
+    if(el.status==="notApplicable") return;
+    if(foundOnly&&el.status!=="present") return;
+    delState.decisions[el.field]="approved"; n++;
+  });
+  delAudit(foundOnly?("Bulk approve (found only): "+n+" field(s) approved."):("Bulk approve all: "+n+" field(s) approved."));
+  delRender();
+  delGoToStep(3);
+}
+function delGenerate(){
+  delSyncHeaderFromDom();
+  var miss=delHeaderMissing(), und=delUndecidedCount();
+  if(miss.length||und){ delRender(); return; }
+  var bytes=delBuildDocxBytes(delState.data);
+  var blob=new Blob([bytes],{type:"application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"});
+  var name="DEL_"+(delState.data.planMetadata.caseNumber||"case")+".docx";
+  delState.generated={blob:blob,name:name};
+  delAudit("Generated "+name+" from approved DEL JSON.");
+  delState.step=4; delRender();
+}
+function delHandleAction(action,el){
+  var field=el?el.getAttribute("data-field"):null;
+  switch(action){
+    case "demo": delLoadDemo(); break;
+    case "hide-welcome": delState.welcome=false; delRender(); break;
+    case "show-welcome": delState.welcome=true; delRender(); break;
+    case "goto-step": delGoToStep(parseInt(el.getAttribute("data-step"),10)||0); break;
+    case "download-prompt":
+      delDownloadBlob(new Blob([DEL_SCRAPER_PROMPT],{type:"text/markdown"}),"del-scraper-prompt.md");
+      delAudit("Scraper prompt downloaded."); break;
+    case "import-paste":{
+      var ta=document.getElementById("del-json-paste");
+      if(!ta||!ta.value.trim()){ delState.importReport={kind:"error",report:["Paste a JSON payload first."]}; delRender(); break; }
+      delImportText(ta.value,"pasted JSON"); break; }
+    case "approve":
+      if(field){ delState.decisions[field]="approved"; delAudit("Approved "+field+"."); delRender(); } break;
+    case "reject":
+      if(field){ delState.decisions[field]="rejected"; delAudit("Rejected "+field+" — needs a new value before Generate."); delRender(); } break;
+    case "edit":
+      if(field){ delState.editingField=field; delRender(); } break;
+    case "cancel-edit": delState.editingField=null; delRender(); break;
+    case "save-edit":{
+      if(!field) break;
+      var target=delElementByField(delState.data,field);
+      if(target){
+        var st=document.getElementById("del-edit-status");
+        var pr=document.getElementById("del-edit-prim");
+        var sc=document.getElementById("del-edit-sec");
+        var nt=document.getElementById("del-edit-note");
+        if(st) target.status=st.value;
+        if(pr) target.primarySource=pr.value||null;
+        if(sc) target.secondarySource=sc.value||null;
+        if(nt) target.note=nt.value||null;
+        delState.decisions[field]="edited";
+        delAudit("Edited "+field+" (status "+target.status+").");
+      }
+      delState.editingField=null; delRender(); break; }
+    case "approve-all": delBulkApprove(false); break;
+    case "approve-found": delBulkApprove(true); break;
+    case "generate": delGenerate(); break;
+    case "download-docx":
+      if(delState.generated) delDownloadBlob(delState.generated.blob,delState.generated.name);
+      break;
+    case "share-docx":
+      if(delState.generated&&typeof navigator!=="undefined"&&navigator.share){
+        var file=new File([delState.generated.blob],delState.generated.name,{type:"application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"});
+        navigator.share({files:[file]}).catch(function(){});
+      }
+      break;
+    case "download-audit":
+      delDownloadBlob(new Blob([delState.audit.join("\n")],{type:"text/plain"}),"del-audit-log.txt");
+      break;
+    case "start-over":
+      delState.data=null; delState.decisions={}; delState.generated=null; delState.unmapped=[];
+      delState.importReport=null; delState.step=0; delRender(); break;
+    case "apply-mapping":{
+      var idx=parseInt(el.getAttribute("data-index"),10);
+      var sel=document.getElementById("del-map-"+idx);
+      var entry=delState.unmapped.filter(function(u){ return !u.applied&&!u.ignored; })[idx];
+      if(!sel||!sel.value||!entry) break;
+      var parts=sel.value.split(":");
+      var kind=parts[0], target=parts[1];
+      delSaveMapping(delSafeStorage(),delFlexNormKey(entry.path),target);
+      delState.savedMappings=delLoadSavedMappings(delSafeStorage());
+      if(kind==="H"&&delState.data){ delState.data.planMetadata[target]=String(entry.value); }
+      else if(kind==="E"&&delState.data){
+        var el2=delElementByField(delState.data,target);
+        if(el2){ el2.status="present"; el2.primarySource="JSON payload"; el2.match={concept:el2.description,passage:String(entry.value),location:"JSON payload"}; el2.audit=["flex import: mapped by reviewer from "+entry.path]; }
+      }
+      entry.applied=true;
+      delAudit("Mapped "+entry.path+" to "+target+".");
+      delRender(); break; }
+    case "ignore-mapping":{
+      var idx2=parseInt(el.getAttribute("data-index"),10);
+      var entry2=delState.unmapped.filter(function(u){ return !u.applied&&!u.ignored; })[idx2];
+      if(entry2){ entry2.ignored=true; delAudit("Ignored unmapped key "+entry2.path+"."); }
+      delRender(); break; }
+  }
+}
+function delInit(){
+  if(typeof document==="undefined") return;
+  document.addEventListener("click",function(ev){
+    var t=ev.target&&ev.target.closest?ev.target.closest("[data-action]"):null;
+    if(t) delHandleAction(t.getAttribute("data-action"),t);
+    var f=ev.target&&ev.target.closest?ev.target.closest("[data-match-filter]"):null;
+    if(f){ delState.rankFilter=f.getAttribute("data-match-filter"); delRender(); }
+  });
+  document.addEventListener("input",function(ev){
+    var t=ev.target;
+    if(t&&t.getAttribute&&t.getAttribute("data-meta")&&delState.data){
+      delState.data.planMetadata[t.getAttribute("data-meta")]=t.value;
+    }
+  });
+  var navDel=document.getElementById("nav-del");
+  var navM=document.getElementById("nav-matches");
+  if(navDel) navDel.addEventListener("click",function(){ delState.ranking=false; delRender(); });
+  if(navM) navM.addEventListener("click",function(){ delState.ranking=true; delRender(); });
+  delRender();
+}
+if(typeof document!=="undefined"){
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",delInit);
+  else delInit();
+}
+/* ---- public surface for tests and reuse ---- */
+globalThis.DEL={
+  VERSION:DEL_VERSION,
+  validateDelJson:validateDelJson,
+  importFlexDelJson:importFlexDelJson,
+  mergePartialDelJson:mergePartialDelJson,
+  delIsDelJson:delIsDelJson,
+  delIsPartialDelJson:delIsPartialDelJson,
+  delScore:delScore,
+  delRankElements:delRankElements,
+  delBuildDocxBytes:delBuildDocxBytes,
+  delBuildDocumentXml:delBuildDocumentXml,
+  buildDemoData:buildDemoData,
+  DEMO_DEL_JSON:DEMO_DEL_JSON,
+  DEL_FIELDS:DEL_FIELDS,
+  DEL_GROUP_A:DEL_GROUP_A,
+  DEL_GROUP_B:DEL_GROUP_B,
+  DEL_STATUSES:DEL_STATUSES,
+  DEL_SCRAPER_PROMPT:DEL_SCRAPER_PROMPT,
+  state:delState
+};
+</script>
+</body>
+</html>
