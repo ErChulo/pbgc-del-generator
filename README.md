@@ -43,6 +43,7 @@ Demo case: synthetic. Riverbend Manufacturing Pension Plan, Plan No. 001, case 9
 | `docs/tokens.json` | PBGC Design System tokens used (v1.1.0 DRAFT, not approved). |
 | `docs/DESIGN_SYSTEM.md` | Which tokens, which version, which choices. |
 | `docs/DEL_NOTES.md` | DEL definition, template mapping, statuses, provenance. |
+| `docs/HOW_IT_WORKS.md` | End-to-end mechanics: user actions and app behavior. |
 | `scripts/build_single_file.py` | Injects the prompt into the HTML; runs safety checks. |
 | `scripts/gen_demo_docx.cjs` | Generates the demo .docx through the HTML's own code. |
 | `scripts/verify_docx.py` | Checks the generated .docx with python-docx. |
