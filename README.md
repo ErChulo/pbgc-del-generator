@@ -1,8 +1,8 @@
 # DEL Generator — Data Element Listing
 
-![Tests: 136 passing](https://img.shields.io/badge/tests-136%20passing-brightgreen)
-![Unit tests: 70 passing](https://img.shields.io/badge/unit%20tests-70%20passing-brightgreen)
-![Browser tests: 66 passing](https://img.shields.io/badge/browser%20tests-66%20passing-brightgreen)
+![Tests: 149 passing](https://img.shields.io/badge/tests-149%20passing-brightgreen)
+![Unit tests: 75 passing](https://img.shields.io/badge/unit%20tests-75%20passing-brightgreen)
+![Browser tests: 74 passing](https://img.shields.io/badge/browser%20tests-74%20passing-brightgreen)
 ![DOCX checks: passing](https://img.shields.io/badge/docx%20checks-passing-brightgreen)
 ![Network calls: 0](https://img.shields.io/badge/network%20calls-0-brightgreen)
 ![Version: v0.1.0](https://img.shields.io/badge/version-v0.1.0-blue)
@@ -15,7 +15,7 @@ Write the DEL — the Data Element Listing — from plan documents. A DEL lists 
 
 ## End result
 
-A filled DEL Word document: `DEL_<case>.docx`. 3 tables: header (11×2), sources, elements (58×7). Plus an audit log.
+A filled DEL Word document: `<case>DEL.docx`, e.g. `98765400DEL.docx`. 3 tables: header (11×2), sources, elements (58×7). Plus an audit log.
 
 ## How to use
 
@@ -25,7 +25,7 @@ Open `del-generator.html` in a browser, straight from disk (`file://`). No serve
 2. **Upload JSON** — JSON from the LLM, or flat JSON, or an OCR payload. Partial JSON fills only missing fields.
 3. **Review** — each field: Approve / Edit / Reject. Unmapped keys listed, never dropped. Conflicts become ambiguous, never merged.
 4. **Generate** — locked until header (plan name, case number, DOPT) is filled and each field has a decision.
-5. **Download** — filled `DEL_<case>.docx` + audit log. Share button on devices that support it.
+5. **Download** — filled `<case>DEL.docx` + audit log. Share button on devices that support it.
 
 Second view: **Match ranking**. Field | matched concept + location | similarity score. Highest first. Score counts shared words and phrases. It ranks, never decides. Low-score and unmatched fields listed on their own, never dropped.
 
@@ -66,13 +66,13 @@ python3 scripts/build_single_file.py  # re-inject prompt, run safety checks
 
 ## Verified — v0.1.0
 
-- `npm test`: **136 passed, 0 failed** (70 unit + 66 browser).
+- `npm test`: **149 passed, 0 failed** (75 unit + 74 browser).
 - `node --check` on the HTML script: passes.
 - `python3 scripts/verify_docx.py`: all checks pass. 3 tables (header 11×2, sources 6×3, elements 58×7). Header filled. No placeholder text.
 - Grep: 0 `fetch(`, 0 `<script src`, 0 `<link>`, 0 `import(`, no external URLs. Only `http://` strings: OOXML namespace URIs in the .docx builder — identifiers, not fetches.
 - Browser test: page loads in jsdom on an opaque origin (file: URL). Demo button loads the demo case, moves to Review.
 - Theme toggle: flips data-theme, dark page #000, header stays brand blue, choice persists.
-- Logo: one white PBGC logo in the blue header, both themes, alt text set, 120px wide.
+- Logo: one white PBGC logo in the blue header, both themes, alt text set, 156px wide (52px high).
 - Header/nav: skip link first, nav links with aria-current, hash links + hashchange, Menu disclosure on small screens with Escape + focus return.
 
 ## Not verified

@@ -52,7 +52,8 @@ source of truth). Fetched 2026-11-11.
 - Header: slim blue bar (`#002D72`, both themes). Left to right: the
   white PBGC logo, the app title "DEL Generator" (1.25rem, one line),
   a short subtitle, the theme toggle at the right. Under 640px the
-  subtitle hides and the logo shrinks to 32px high so the row fits.
+  subtitle hides, the logo is 44px high, the toggle shows its icon
+  only, and the header gap shrinks to 0.5rem, so the row fits.
 - Nav: links, not buttons. A bar under the header, on the page
   background (white light, `#000` dark). Real links (`#del`,
   `#ranking`) with `data-view`. Current view carries
@@ -90,8 +91,14 @@ source of truth). Fetched 2026-11-11.
   data URI (single-file constraint). The PNG files are local source
   copies only.
 - The logo sits in the blue header, left of the title. Alt text:
-  "Pension Benefit Guaranty Corporation". Shown 120px wide (40px
+  "Pension Benefit Guaranty Corporation". Shown 156px wide (52px
   high, 3:1), above the 60px minimum. Clear space 0.5rem around it.
+  The 52px height is measured: the "PBGC" letters are 74px tall in
+  the 251px canvas, so at 52px they render ~15px against the 20px
+  title (they were ~12px at 40px, which read too small). Under 640px
+  the logo is 44px high (~132px wide, letters ~13px) so it stays
+  readable on a phone; the toggle shows its icon only and the header
+  gap shrinks to 0.5rem so the row fits.
 - Official artwork only. Never redrawn, recolored, outlined, or
   approximated. No white box behind the full-color logo.
 

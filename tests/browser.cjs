@@ -144,10 +144,26 @@ setTimeout(() => {
     check('logo still visible in dark theme (no per-theme switching)', disp(logo) === 'block', disp(logo));
     check('header stays brand blue in dark, logo on blue', cssVar(document, ':root', '--blue') === '#002D72' && (cssRule(document, '.topbar') || { style: { background: '' } }).style.background === 'var(--blue)');
     toggle.click(); // back to light
-    // Logo display width at the 40px CSS height: 751/251 -> ~120px. Minimum 60px.
+    // Logo display width at the 52px CSS height: 751/251 -> ~156px. Minimum 60px.
+    // PBGC letters are 74px of the 251px canvas, so at 52px they render ~15px
+    // against the 20px title (was ~12px at 40px, which read too small).
+    check('logo is 52px high on desktop (CSS rule)', (cssRule(document, '.brand-logo') || { style: { height: '' } }).style.height === '52px');
     const size = pngSize(logo.getAttribute('src'));
-    const width = Math.round(40 * size.w / size.h);
+    const width = Math.round(52 * size.w / size.h);
     check('logo shows at least 60px wide', width >= 60, width + 'px');
+    // Narrow screen (640px): logo 44px (letters ~13px, still readable),
+    // toggle shows its icon only, header gap shrinks, so the row fits.
+    const media640 = mediaRules(document, '640');
+    check('640px breakpoint exists', !!media640);
+    check('logo is 44px high at 640px', !!media640 && ruleText(media640, '.brand-logo').indexOf('44px') !== -1);
+    check('toggle label hides at 640px (icon only)', !!media640 && ruleText(media640, '.theme-toggle-label').indexOf('none') !== -1);
+    check('header gap shrinks to 0.5rem at 640px', !!media640 && ruleText(media640, '.topbar-row').indexOf('.5rem') !== -1);
+    const narrowWidth = Math.round(44 * size.w / size.h);
+    check('logo still at least 60px wide at 640px', narrowWidth >= 60, narrowWidth + 'px');
+    // Toggle label lives in a span and flips with the theme.
+    const label = toggle.querySelector('.theme-toggle-label');
+    check('toggle label is a span', !!label);
+    check('toggle label reads Dark in light theme', !!label && label.textContent === 'Dark');
   } catch (e) {
     check('no exception during opaque-origin browser test', false, e.message);
   }

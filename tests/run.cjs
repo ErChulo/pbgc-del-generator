@@ -60,6 +60,13 @@ check("demo has conditional items (QDRO/spouse)", cond.length >= 5, "found " + c
 const miss = demo.elements.filter((e) => e.status === "missing");
 check("demo has missing items (T001/T002)", miss.length === 2 && miss.some((e) => e.field === "T001"));
 
+/* --- 1b. .docx filename: <case>DEL.docx --- */
+check("docx filename is <case>DEL.docx", DEL.delDocxFileName("98765400") === "98765400DEL.docx");
+check("docx filename keeps leading zeros (case number is text)", DEL.delDocxFileName("00123456") === "00123456DEL.docx");
+check("docx filename falls back to DEL.docx when empty", DEL.delDocxFileName("") === "DEL.docx");
+check("docx filename falls back to DEL.docx when null", DEL.delDocxFileName(null) === "DEL.docx");
+check("docx filename falls back to DEL.docx when undefined", DEL.delDocxFileName(undefined) === "DEL.docx");
+
 /* --- 2. Validator rejects bad input, accepts good --- */
 const bad1 = clone(demo); delete bad1.planMetadata.planName;
 check("validator rejects missing planName", DEL.validateDelJson(bad1).errors.length > 0);
@@ -243,7 +250,7 @@ check("prompt says do not guess", /do not guess/i.test(DEL.DEL_SCRAPER_PROMPT));
   check("UI generate is locked while fields are undecided", st().generated === null);
   st().data.elements.forEach((el) => { if (el.status !== "notApplicable") st().decisions[el.field] = "approved"; });
   sb2.delGenerate();
-  check("UI generate produces the .docx once all decided", !!st().generated && st().generated.name === "DEL_98765400.docx" && st().step === 4, "name=" + (st().generated && st().generated.name));
+  check("UI generate produces the .docx once all decided", !!st().generated && st().generated.name === "98765400DEL.docx" && st().step === 4, "name=" + (st().generated && st().generated.name));
 }
 
 console.log("\n" + pass + " passed, " + fail + " failed");
