@@ -135,38 +135,19 @@ footer{margin:2rem 0 1rem;border-top:1px solid var(--gray-2);padding-top:1rem}
     <ul id="views-list" class="views-list">
       <li><a id="nav-del" class="nav-link" href="#del" data-view="del" aria-current="page">DEL generator</a></li>
       <li><a id="nav-matches" class="nav-link" href="#ranking" data-view="ranking">Match ranking</a></li>
+      <li><a id="nav-welcome" class="nav-link" href="#welcome" data-view="welcome">Welcome</a></li>
+      <li><a id="nav-help" class="nav-link" href="#help" data-view="help">Help</a></li>
     </ul>
   </div>
 </nav>
 <main class="wrap" id="main">
 <div id="view-del">
-  <section id="welcome" class="card">
-    <h2>Welcome</h2>
-    <p>This app writes the DEL — the Data Element Listing — from plan documents. It does not read the documents itself.</p>
-    <p><strong>How it works, in 5 steps:</strong> download the scraper prompt · feed the prompt and the documents to an LLM · upload the JSON the LLM returns · review each field · generate the Word document.</p>
-    <p class="small">The LLM proposes. The app checks. You decide. Nothing leaves this page — there is no server.</p>
-    <p><button type="button" class="primary" data-action="demo">Try the demo</button> <button type="button" data-action="hide-welcome">Hide this</button></p>
-  </section>
   <ol id="stepper" class="stepper" aria-label="Steps"></ol>
   <section id="step-0" class="step card"><div id="prompt-card"></div></section>
   <section id="step-1" class="step card"><div id="upload-box"></div></section>
   <section id="step-2" class="step card"><div id="review-box"></div></section>
   <section id="step-3" class="step card"><div id="generate-box"></div></section>
   <section id="step-4" class="step card"><div id="download-box"></div></section>
-  <section id="help" class="card">
-    <h2>Help</h2>
-    <h3>What is a DEL?</h3>
-    <p>A table of all the fields a PBGC case needs, and where each one comes from. It is a wish list — every field the plan could need, not only the ones in the census.</p>
-    <h3>What does the LLM do?</h3>
-    <p>It reads the plan documents and finds, for each field, whether the plan needs it, for which groups, and where the concept appears. It returns JSON. It never writes the Word document.</p>
-    <h3>What if the LLM is wrong?</h3>
-    <p>You review every field before anything is generated. A wrong value is never used — a missing or ambiguous one is shown to you instead.</p>
-    <h3>Where do the fields come from?</h3>
-    <p>The BCV Data Dictionary Complete: all Input fields (220 Input + 51 Input|Calculated). This version covers the template's 56. More groups come later.</p>
-    <h3>Glossary</h3>
-    <p><strong>DEL</strong> — Data Element Listing. <strong>DOPT</strong> — Date of Plan Termination. <strong>QDRO</strong> — Qualified Domestic Relations Order. <strong>ARD</strong> — Actual Retirement Date. <strong>PA_AMB</strong> — Prior Administrator's Accrued Monthly Benefit.</p>
-    <p><button type="button" data-action="show-welcome">Show the welcome again</button></p>
-  </section>
 </div>
 <div id="view-matches" hidden>
   <section class="card">
@@ -179,6 +160,30 @@ footer{margin:2rem 0 1rem;border-top:1px solid var(--gray-2);padding-top:1rem}
       <button type="button" class="secondary" data-match-filter="unmatched">No match</button>
     </p>
     <div id="matches-table"></div>
+  </section>
+</div>
+<div id="view-welcome" hidden>
+  <section id="welcome" class="card">
+    <h2>Welcome</h2>
+    <p>This app writes the DEL — the Data Element Listing — from plan documents. It does not read the documents itself.</p>
+    <p><strong>How it works, in 5 steps:</strong> download the scraper prompt · feed the prompt and the documents to an LLM · upload the JSON the LLM returns · review each field · generate the Word document.</p>
+    <p class="small">The LLM proposes. The app checks. You decide. Nothing leaves this page — there is no server.</p>
+    <p><button type="button" class="primary" data-action="demo">Try the demo</button></p>
+  </section>
+</div>
+<div id="view-help" hidden>
+  <section id="help" class="card">
+    <h2>Help</h2>
+    <h3>What is a DEL?</h3>
+    <p>A table of all the fields a PBGC case needs, and where each one comes from. It is a wish list — every field the plan could need, not only the ones in the census.</p>
+    <h3>What does the LLM do?</h3>
+    <p>It reads the plan documents and finds, for each field, whether the plan needs it, for which groups, and where the concept appears. It returns JSON. It never writes the Word document.</p>
+    <h3>What if the LLM is wrong?</h3>
+    <p>You review every field before anything is generated. A wrong value is never used — a missing or ambiguous one is shown to you instead.</p>
+    <h3>Where do the fields come from?</h3>
+    <p>The BCV Data Dictionary Complete: all Input fields (220 Input + 51 Input|Calculated). This version covers the template's 56. More groups come later.</p>
+    <h3>Glossary</h3>
+    <p><strong>DEL</strong> — Data Element Listing. <strong>DOPT</strong> — Date of Plan Termination. <strong>QDRO</strong> — Qualified Domestic Relations Order. <strong>ARD</strong> — Actual Retirement Date. <strong>PA_AMB</strong> — Prior Administrator's Accrued Monthly Benefit.</p>
   </section>
 </div>
 </main>
@@ -1278,8 +1283,10 @@ function delBuildDocxBytes(d){
 
 /* ---- UI state, rendering, actions ---- */
 var DEL_STEPS=["Download prompt","Upload JSON","Review","Generate","Download"];
+var DEL_VIEWS=["del","ranking","welcome","help"];
+var DEL_VIEW_HASH={del:"#del",ranking:"#ranking",welcome:"#welcome",help:"#help"};
 var delState={
-  data:null, decisions:{}, step:0, theme:"light", welcome:true, ranking:false,
+  data:null, decisions:{}, step:0, theme:"light", view:"del",
   rankFilter:"all", audit:[], unmapped:[], conflicts:[], warnings:[],
   importReport:null, generated:null, editingField:null,
   savedMappings:delLoadSavedMappings(delSafeStorage())
@@ -1533,19 +1540,33 @@ function delRankingHtml(){
 function delRender(){
   if(typeof document==="undefined") return;
   delSyncThemeButton();
-  var welcome=document.getElementById("welcome");
-  if(welcome) welcome.style.display=delState.welcome?"":"none";
-  var navDel=document.getElementById("nav-del"), navM=document.getElementById("nav-matches");
-  var viewDel=document.getElementById("view-del"), viewM=document.getElementById("view-matches");
-  if(navDel){ if(delState.ranking) navDel.removeAttribute("aria-current"); else navDel.setAttribute("aria-current","page"); }
-  if(navM){ if(delState.ranking) navM.setAttribute("aria-current","page"); else navM.removeAttribute("aria-current"); }
-  if(viewDel) viewDel.hidden=!!delState.ranking;
-  if(viewM) viewM.hidden=!delState.ranking;
-  if(delState.ranking){
+  var cur=DEL_VIEWS.indexOf(delState.view)<0?"del":delState.view;
+  delState.view=cur;
+  var views={
+    del:document.getElementById("view-del"),
+    ranking:document.getElementById("view-matches"),
+    welcome:document.getElementById("view-welcome"),
+    help:document.getElementById("view-help")
+  };
+  var navs={
+    del:document.getElementById("nav-del"),
+    ranking:document.getElementById("nav-matches"),
+    welcome:document.getElementById("nav-welcome"),
+    help:document.getElementById("nav-help")
+  };
+  var k;
+  for(k in views){ if(views[k]) views[k].hidden=(k!==cur); }
+  for(k in navs){
+    if(!navs[k]) continue;
+    if(k===cur) navs[k].setAttribute("aria-current","page");
+    else navs[k].removeAttribute("aria-current");
+  }
+  if(cur==="ranking"){
     var mt=document.getElementById("matches-table");
     if(mt) mt.innerHTML=delRankingHtml();
     return;
   }
+  if(cur!=="del") return;
   var stepper=document.getElementById("stepper");
   if(stepper) stepper.innerHTML=delStepperHtml();
   for(var i=0;i<5;i++){
@@ -1572,7 +1593,8 @@ function delLoadDemo(){
   delState.importReport={kind:"demo",mapped:56,unmapped:0,conflicts:0,warnings:[]};
   delState.generated=null; delState.editingField=null;
   delAudit("Demo case loaded: Riverbend Manufacturing Pension Plan, case 98765400.");
-  delState.step=2; delRender();
+  delState.step=2;
+  delShowView("del");
 }
 function delImportText(text,label){
   var parsed;
@@ -1642,8 +1664,6 @@ function delHandleAction(action,el){
   switch(action){
     case "demo": delLoadDemo(); break;
     case "theme": delToggleTheme(); break;
-    case "hide-welcome": delState.welcome=false; delRender(); break;
-    case "show-welcome": delState.welcome=true; delRender(); break;
     case "goto-step": delGoToStep(parseInt(el.getAttribute("data-step"),10)||0); break;
     case "download-prompt":
       delDownloadBlob(new Blob([DEL_SCRAPER_PROMPT],{type:"text/markdown"}),"del-scraper-prompt.md");
@@ -1718,10 +1738,11 @@ function delHandleAction(action,el){
   }
 }
 /* ---- view switching (HeaderNav links) ---- */
-function delShowView(ranking){
-  delState.ranking=!!ranking;
+function delShowView(view){
+  var v=(view&&DEL_VIEW_HASH[view])?view:"del";
+  delState.view=v;
   if(typeof location!=="undefined"){
-    var h=delState.ranking?"#ranking":"#del";
+    var h=DEL_VIEW_HASH[v];
     if(location.hash!==h){ try{ location.hash=h; }catch(e){} }
   }
   delRender();
@@ -1748,15 +1769,13 @@ function delInit(){
       delState.data.planMetadata[t.getAttribute("data-meta")]=t.value;
     }
   });
-  var navDel=document.getElementById("nav-del");
-  var navM=document.getElementById("nav-matches");
+  var navLinks=document.querySelectorAll("#views-list a[data-view]");
   function delNavClick(ev){
     if(ev&&ev.preventDefault) ev.preventDefault();
-    delShowView(this.getAttribute("data-view")==="ranking");
+    delShowView(this.getAttribute("data-view"));
     delCloseMenu(false);
   }
-  if(navDel) navDel.addEventListener("click",delNavClick);
-  if(navM) navM.addEventListener("click",delNavClick);
+  for(var li=0;li<navLinks.length;li++) navLinks[li].addEventListener("click",delNavClick);
   var menuBtn=document.getElementById("menu-toggle");
   if(menuBtn) menuBtn.addEventListener("click",function(){
     var nav=document.getElementById("views-nav");
@@ -1771,10 +1790,13 @@ function delInit(){
   });
   if(typeof window!=="undefined"&&window.addEventListener){
     window.addEventListener("hashchange",function(){
-      if(typeof location!=="undefined") delShowView(location.hash==="#ranking");
+      if(typeof location!=="undefined") delShowView(location.hash.replace(/^#/,""));
     });
   }
-  if(typeof location!=="undefined"&&location.hash==="#ranking") delState.ranking=true;
+  if(typeof location!=="undefined"){
+    var hv=location.hash.replace(/^#/,"");
+    delState.view=DEL_VIEW_HASH[hv]?hv:"del";
+  }
   delApplyTheme(delLoadTheme()==="dark"?"dark":"light");
   delRender();
 }

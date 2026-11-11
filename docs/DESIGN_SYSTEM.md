@@ -55,19 +55,21 @@ source of truth). Fetched 2026-11-11.
   subtitle hides, the logo is 44px high, the toggle shows its icon
   only, and the header gap shrinks to 0.5rem, so the row fits.
 - Nav: links, not buttons. A bar under the header, on the page
-  background (white light, `#000` dark). Real links (`#del`,
-  `#ranking`) with `data-view`. Current view carries
-  `aria-current="page"`. Current link: bold + 3px bottom border
-  (brand blue light, blue-1 `#BEC6DF` dark). Other links: blue text,
-  underline on hover/focus. 44px targets.
+  background (white light, `#000` dark). Four links (`#del`,
+  `#ranking`, `#welcome`, `#help`) with `data-view`, one view each.
+  Welcome and Help are their own pages, not shown on the landing
+  page — the landing page shows only the DEL workflow. Current view
+  carries `aria-current="page"`. Current link: bold + 3px bottom
+  border (brand blue light, blue-1 `#BEC6DF` dark). Other links: blue
+  text, underline on hover/focus. 44px targets.
 - Narrow screens (max-width 640px): links collapse behind a "Menu"
   disclosure button (`aria-expanded`, `aria-controls`). Escape closes
   the menu and returns focus to the Menu button. A link click closes
   the menu. On wide screens the links show inline and the button is
   hidden.
 - The design system says the nav collapses below 1024px. The app
-  uses 640px: two links fit inline on a tablet. Recorded here, not
-  decided unilaterally.
+  uses 640px: four links fit inline on a tablet (about 400px total).
+  Recorded here, not decided unilaterally.
 
 ## Logos
 

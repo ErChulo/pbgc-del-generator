@@ -8,6 +8,9 @@
 // Part 4 — HeaderNav: skip link first, nav links (not buttons) with
 // aria-current, hash links + hashchange, disclosure menu with Escape
 // and focus return.
+// Part 5 — Welcome and Help are their own pages: 4 nav links, the
+// landing page shows only the DEL workflow, Try the demo from the
+// Welcome page loads the demo and switches to the DEL view.
 // Part 3 — persistence (http:// origin, storage works): a saved dark choice
 // loads dark; toggling writes the choice back.
 'use strict';
@@ -226,6 +229,87 @@ setTimeout(() => {
     check('nav links are 44px targets', (cssRule(document, '.nav-link') || { style: { minHeight: '' } }).style.minHeight === '44px');
   } catch (e) {
     check('no exception during HeaderNav browser test', false, e.message);
+  }
+
+  try {
+    // ---- Part 5: Welcome and Help are their own pages ----
+    const { window } = opaque.dom;
+    const { document } = window;
+    const navDel = document.getElementById('nav-del');
+    const navM = document.getElementById('nav-matches');
+    const navW = document.getElementById('nav-welcome');
+    const navH = document.getElementById('nav-help');
+    const viewDel = document.getElementById('view-del');
+    const viewM = document.getElementById('view-matches');
+    const viewW = document.getElementById('view-welcome');
+    const viewH = document.getElementById('view-help');
+    navDel.click(); // back to the landing view (Part 4 ended on ranking)
+    check('nav has exactly 4 links', document.querySelectorAll('#views-list a.nav-link').length === 4);
+    check('nav links are in order DEL, ranking, Welcome, Help',
+      Array.from(document.querySelectorAll('#views-list a.nav-link')).map(a => a.getAttribute('data-view')).join(',') === 'del,ranking,welcome,help');
+    check('Welcome link has real href + data-view', navW.getAttribute('href') === '#welcome' && navW.getAttribute('data-view') === 'welcome');
+    check('Help link has real href + data-view', navH.getAttribute('href') === '#help' && navH.getAttribute('data-view') === 'help');
+    // landing page: only the DEL workflow
+    check('landing shows the DEL view', viewDel.hidden === false && viewM.hidden === true && viewW.hidden === true && viewH.hidden === true);
+    check('welcome section is not inside the DEL view', document.querySelector('#view-del #welcome') === null);
+    check('help section is not inside the DEL view', document.querySelector('#view-del #help') === null);
+    check('welcome section lives in its own view', document.querySelector('#view-welcome #welcome') !== null);
+    check('help section lives in its own view', document.querySelector('#view-help #help') !== null);
+    check('stepper is rendered on the landing page', document.getElementById('stepper').children.length === 5);
+    // aria-current across all four views
+    const cur = () => [navDel, navM, navW, navH].map(n => n.getAttribute('aria-current') === 'page' ? '1' : '0').join('');
+    check('aria-current is on DEL only at landing', cur() === '1000', cur());
+    navW.click();
+    check('clicking Welcome shows the welcome view', viewW.hidden === false && viewDel.hidden === true && viewM.hidden === true && viewH.hidden === true);
+    check('aria-current moves to Welcome', cur() === '0010', cur());
+    check('URL hash follows to #welcome', window.location.hash === '#welcome', window.location.hash);
+    navH.click();
+    check('clicking Help shows the help view', viewH.hidden === false && viewDel.hidden === true && viewM.hidden === true && viewW.hidden === true);
+    check('aria-current moves to Help', cur() === '0001', cur());
+    check('URL hash follows to #help', window.location.hash === '#help', window.location.hash);
+    navM.click();
+    check('clicking Match ranking shows the ranking view', viewM.hidden === false && viewDel.hidden === true && viewW.hidden === true && viewH.hidden === true);
+    check('aria-current moves to Match ranking', cur() === '0100', cur());
+    // hash routing for the two new views
+    window.location.hash = '#welcome';
+    window.dispatchEvent(new window.Event('hashchange'));
+    check('hashchange to #welcome shows the welcome view', viewW.hidden === false && navW.getAttribute('aria-current') === 'page');
+    window.location.hash = '#help';
+    window.dispatchEvent(new window.Event('hashchange'));
+    check('hashchange to #help shows the help view', viewH.hidden === false && navH.getAttribute('aria-current') === 'page');
+    window.location.hash = '#bogus';
+    window.dispatchEvent(new window.Event('hashchange'));
+    check('unknown hash falls back to the DEL view', viewDel.hidden === false && navDel.getAttribute('aria-current') === 'page');
+    window.location.hash = '';
+    window.dispatchEvent(new window.Event('hashchange'));
+    check('empty hash falls back to the DEL view', viewDel.hidden === false);
+    // Try the demo from the Welcome page
+    navW.click();
+    const demoBtn = document.querySelector('#view-welcome [data-action="demo"]');
+    check('Try the demo button is on the Welcome page', !!demoBtn);
+    demoBtn.click();
+    check('Try the demo leaves the demo case loaded', !!window.DEL.state.data && window.DEL.state.data.planMetadata.caseNumber === '98765400');
+    check('Try the demo switches to the DEL view', viewDel.hidden === false && viewW.hidden === true);
+    check('Try the demo moves to Review (step 2)', window.DEL.state.step === 2);
+    check('URL hash follows to #del after the demo', window.location.hash === '#del', window.location.hash);
+    // the old welcome buttons are gone
+    check('no Hide this button', document.querySelector('[data-action="hide-welcome"]') === null);
+    check('no Show the welcome again button', document.querySelector('[data-action="show-welcome"]') === null);
+    // disclosure menu with 4 links
+    const menuBtn = document.getElementById('menu-toggle');
+    const nav = document.getElementById('views-nav');
+    menuBtn.click();
+    check('Menu button opens the menu with 4 links', nav.classList.contains('open') && document.querySelectorAll('#views-list a.nav-link').length === 4);
+    navH.click();
+    check('clicking a link closes the menu', menuBtn.getAttribute('aria-expanded') === 'false' && !nav.classList.contains('open'));
+    menuBtn.click();
+    navH.focus();
+    document.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Escape' }));
+    check('Escape closes the menu with 4 links', menuBtn.getAttribute('aria-expanded') === 'false' && !nav.classList.contains('open'));
+    check('Escape returns focus to the Menu button', document.activeElement === menuBtn);
+    navDel.click();
+  } catch (e) {
+    check('no exception during Welcome/Help browser test', false, e.message);
   }
 
   try {

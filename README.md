@@ -1,8 +1,8 @@
 # DEL Generator — Data Element Listing
 
-![Tests: 149 passing](https://img.shields.io/badge/tests-149%20passing-brightgreen)
+![Tests: 183 passing](https://img.shields.io/badge/tests-183%20passing-brightgreen)
 ![Unit tests: 75 passing](https://img.shields.io/badge/unit%20tests-75%20passing-brightgreen)
-![Browser tests: 74 passing](https://img.shields.io/badge/browser%20tests-74%20passing-brightgreen)
+![Browser tests: 108 passing](https://img.shields.io/badge/browser%20tests-108%20passing-brightgreen)
 ![DOCX checks: passing](https://img.shields.io/badge/docx%20checks-passing-brightgreen)
 ![Network calls: 0](https://img.shields.io/badge/network%20calls-0-brightgreen)
 ![Version: v0.1.0](https://img.shields.io/badge/version-v0.1.0-blue)
@@ -54,19 +54,19 @@ Demo case: synthetic. Riverbend Manufacturing Pension Plan, Plan No. 001, case 9
 
 ## Design system
 
-PBGC Design System **v1.1.0 DRAFT** (not approved). Tokens from `ErChulo/pbgc-design-system`, commit `84a7149d112ef26fcf1e5656b017b9e54f863cb2` (2026-11-08), blob SHA `49e4c3c9e2a41bbe50bea204ea71a7d427843ac2` (byte-identical). Brand blue #002D72. Helvetica Neue/Arial. WCAG 2.2 AA. Dark theme: toggle in the header. Dark background #000. Logos: white PBGC logo in the blue header, both themes. Header: slim blue bar, logo + compact title, theme toggle. Nav: links under the header (DEL generator / Match ranking), Menu button on small screens. Design-system repo not modified.
+PBGC Design System **v1.1.0 DRAFT** (not approved). Tokens from `ErChulo/pbgc-design-system`, commit `84a7149d112ef26fcf1e5656b017b9e54f863cb2` (2026-11-08), blob SHA `49e4c3c9e2a41bbe50bea204ea71a7d427843ac2` (byte-identical). Brand blue #002D72. Helvetica Neue/Arial. WCAG 2.2 AA. Dark theme: toggle in the header. Dark background #000. Logos: white PBGC logo in the blue header, both themes. Header: slim blue bar, logo + compact title, theme toggle. Nav: links under the header (DEL generator / Match ranking / Welcome / Help), Menu button on small screens. Design-system repo not modified.
 
 ## Tests
 
 ```sh
-npm test                              # 70 unit + 66 browser checks
+npm test                              # 75 unit + 108 browser checks
 python3 scripts/verify_docx.py        # demo .docx checks
 python3 scripts/build_single_file.py  # re-inject prompt, run safety checks
 ```
 
 ## Verified — v0.1.0
 
-- `npm test`: **149 passed, 0 failed** (75 unit + 74 browser).
+- `npm test`: **183 passed, 0 failed** (75 unit + 108 browser).
 - `node --check` on the HTML script: passes.
 - `python3 scripts/verify_docx.py`: all checks pass. 3 tables (header 11×2, sources 6×3, elements 58×7). Header filled. No placeholder text.
 - Grep: 0 `fetch(`, 0 `<script src`, 0 `<link>`, 0 `import(`, no external URLs. Only `http://` strings: OOXML namespace URIs in the .docx builder — identifiers, not fetches.
