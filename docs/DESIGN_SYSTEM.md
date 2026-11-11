@@ -45,6 +45,29 @@ source of truth). Fetched 2026-11-11.
 - **Dark theme is provisional. COLA approval pending.** Do not treat
   as approved.
 
+## HeaderNav
+
+- Skip link first in `<body>`: "Skip to main content", `href="#main"`.
+  Hidden until focused. `<main>` has `id="main"`.
+- Header: slim blue bar (`#002D72`, both themes). Left to right: the
+  white PBGC logo, the app title "DEL Generator" (1.25rem, one line),
+  a short subtitle, the theme toggle at the right. Under 640px the
+  subtitle hides and the logo shrinks to 32px high so the row fits.
+- Nav: links, not buttons. A bar under the header, on the page
+  background (white light, `#000` dark). Real links (`#del`,
+  `#ranking`) with `data-view`. Current view carries
+  `aria-current="page"`. Current link: bold + 3px bottom border
+  (brand blue light, blue-1 `#BEC6DF` dark). Other links: blue text,
+  underline on hover/focus. 44px targets.
+- Narrow screens (max-width 640px): links collapse behind a "Menu"
+  disclosure button (`aria-expanded`, `aria-controls`). Escape closes
+  the menu and returns focus to the Menu button. A link click closes
+  the menu. On wide screens the links show inline and the button is
+  hidden.
+- The design system says the nav collapses below 1024px. The app
+  uses 640px: two links fit inline on a tablet. Recorded here, not
+  decided unilaterally.
+
 ## Logos
 
 - Official PBGC logos, from Drive folder `images` (folder ID
@@ -52,19 +75,23 @@ source of truth). Fetched 2026-11-11.
   `assets/logos/MANIFEST.md`.
 - `PBGC_logo_name_hor_fc.png` (Drive ID
   `1Eap0QZJGTMXPJWazlNmgfwhlYidyfDYd`, 13,609 bytes, 750×250) —
-  full color, light theme.
+  full color. Kept in `assets/logos/` as the light-surface source
+  variant. NOT used by the app.
 - `PBGC_logo_name_hor_wt.png` (Drive ID
   `1IzmMiz_4Dn9T3gLGd3VSaTKn6d0vvq3H`, 11,712 bytes, 751×251) —
-  white, dark theme.
-- Both embedded in `del-generator.html` as base64 data URIs
-  (single-file constraint). The PNG files are local source copies only.
-- Logos sit on the page background at the top of the main content, not
-  in the blue topbar. Full color on white, white on `#000`. They switch
-  with the theme (CSS, `data-theme`). Alt text: "Pension Benefit
-  Guaranty Corporation". Shown 120px wide (40px high, 3:1), above the
-  60px minimum. Clear space around them.
-- Full-color text is dark blue (RGB 30, 55, 109) — unreadable directly
-  on the blue topbar. That is why the logo sits on the page background.
+  white. The only logo in the app.
+- **Decision (user, 2026-11-11): white logo in the blue header, both
+  themes.** The header stays PBGC Blue in both themes, so the header
+  logo is the white artwork in both themes — no per-theme switching.
+  Per design system §4: "On PBGC Blue: use the white (wt) artwork."
+  The white logo is white art, not a white box — the reversed logo,
+  made for dark backgrounds.
+- Only the wt logo is embedded in `del-generator.html` as a base64
+  data URI (single-file constraint). The PNG files are local source
+  copies only.
+- The logo sits in the blue header, left of the title. Alt text:
+  "Pension Benefit Guaranty Corporation". Shown 120px wide (40px
+  high, 3:1), above the 60px minimum. Clear space 0.5rem around it.
 - Official artwork only. Never redrawn, recolored, outlined, or
   approximated. No white box behind the full-color logo.
 

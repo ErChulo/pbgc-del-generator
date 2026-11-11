@@ -2,9 +2,12 @@
 // Part 1 — opaque origin (a file: URL): the v0.1.0 localStorage bug. Every
 // storage access must go through delSafeStorage(); this proves the app
 // survives a blocked localStorage and the demo button works.
-// Part 2 — theme toggle + logos: the toggle flips data-theme on the root,
+// Part 2 — theme toggle + logo: the toggle flips data-theme on the root,
 // the dark page background is #000, the header stays brand blue, and the
-// two embedded PBGC logos switch with the theme.
+// one white (wt) PBGC logo sits in the blue header in both themes.
+// Part 4 — HeaderNav: skip link first, nav links (not buttons) with
+// aria-current, hash links + hashchange, disclosure menu with Escape
+// and focus return.
 // Part 3 — persistence (http:// origin, storage works): a saved dark choice
 // loads dark; toggling writes the choice back.
 'use strict';
@@ -67,6 +70,24 @@ function pngSize(src) {
   return { w: b.readUInt32BE(16), h: b.readUInt32BE(20) };
 }
 
+// Media-query rules: find the @media block whose condition mentions `cond`
+// and return its inner rules.
+function mediaRules(document, cond) {
+  for (const sheet of document.styleSheets) {
+    for (const r of sheet.cssRules) {
+      if (r.conditionText && r.conditionText.indexOf(cond) !== -1) return r.cssRules;
+    }
+  }
+  return null;
+}
+function ruleText(rules, selector) {
+  if (!rules) return '';
+  for (const r of rules) {
+    if (r.selectorText === selector) return r.cssText || '';
+  }
+  return '';
+}
+
 function done() {
   console.log(failures === 0 ? '\nBrowser tests passed' : '\nBrowser tests FAILED: ' + failures);
   process.exit(failures === 0 ? 0 : 1);
@@ -105,26 +126,90 @@ setTimeout(() => {
     toggle.click();
     check('toggle back returns to light', document.documentElement.getAttribute('data-theme') === null && window.DEL.state.theme === 'light');
 
-    // ---- logos (opaque origin) ----
+    // ---- logo: one white (wt) logo in the blue header, both themes ----
     const logos = Array.from(document.querySelectorAll('img.brand-logo'));
-    check('two header logos', logos.length === 2, 'found ' + logos.length);
-    check('logos sit on the page background, not in the topbar', document.querySelector('.topbar img') === null && document.querySelector('main img.brand-logo') !== null);
-    check('logos have the PBGC alt text', logos.every(im => im.getAttribute('alt') === ALT));
-    check('logos are embedded data URIs, not fetches', logos.every(im => (im.getAttribute('src') || '').indexOf('data:image/png;base64,') === 0));
-    check('logos are different files (light vs dark)', logos[0].getAttribute('src') !== logos[1].getAttribute('src'));
-    const lightLogo = document.querySelector('.brand-logo-light');
-    const darkLogo = document.querySelector('.brand-logo-dark');
+    check('exactly one logo img in the HTML', logos.length === 1, 'found ' + logos.length);
+    check('logo sits inside the blue header, not in main', document.querySelector('.topbar img.brand-logo') !== null && document.querySelector('main img.brand-logo') === null);
+    check('no brand-row left in the page', document.querySelector('.brand-row') === null);
+    const logo = logos[0];
+    check('logo has the PBGC alt text', logo.getAttribute('alt') === ALT);
+    check('logo is an embedded data URI, not a fetch', (logo.getAttribute('src') || '').indexOf('data:image/png;base64,') === 0);
+    const wtB64 = fs.readFileSync(path.join(__dirname, '..', 'assets', 'logos', 'PBGC_logo_name_hor_wt.png')).toString('base64');
+    check('logo data URI is the white (wt) source PNG, byte-identical', logo.getAttribute('src') === 'data:image/png;base64,' + wtB64);
+    const fcB64 = fs.readFileSync(path.join(__dirname, '..', 'assets', 'logos', 'PBGC_logo_name_hor_fc.png')).toString('base64');
+    check('full-color (fc) logo is NOT in the HTML', html.indexOf(fcB64) === -1);
     const disp = (el) => window.getComputedStyle(el).display;
-    check('light logo shown, dark logo hidden (light theme)', disp(lightLogo) === 'block' && disp(darkLogo) === 'none', disp(lightLogo) + ' / ' + disp(darkLogo));
+    check('logo visible in light theme', disp(logo) === 'block', disp(logo));
     toggle.click(); // dark
-    check('dark logo shown, light logo hidden (dark theme)', disp(darkLogo) === 'block' && disp(lightLogo) === 'none', disp(lightLogo) + ' / ' + disp(darkLogo));
+    check('logo still visible in dark theme (no per-theme switching)', disp(logo) === 'block', disp(logo));
+    check('header stays brand blue in dark, logo on blue', cssVar(document, ':root', '--blue') === '#002D72' && (cssRule(document, '.topbar') || { style: { background: '' } }).style.background === 'var(--blue)');
     toggle.click(); // back to light
-    // Logo display width at the 40px CSS height: 750/250 -> 120px, 751/251 -> ~120px. Minimum 60px.
-    const sizes = logos.map(im => pngSize(im.getAttribute('src')));
-    const widths = sizes.map(s => Math.round(40 * s.w / s.h));
-    check('logos show at least 60px wide', widths.every(w => w >= 60), widths.join('px, ') + 'px');
+    // Logo display width at the 40px CSS height: 751/251 -> ~120px. Minimum 60px.
+    const size = pngSize(logo.getAttribute('src'));
+    const width = Math.round(40 * size.w / size.h);
+    check('logo shows at least 60px wide', width >= 60, width + 'px');
   } catch (e) {
     check('no exception during opaque-origin browser test', false, e.message);
+  }
+
+  try {
+    // ---- Part 4: HeaderNav (opaque origin) ----
+    const { window } = opaque.dom;
+    const { document } = window;
+    const skip = document.querySelector('.skip-link');
+    check('skip link exists', !!skip);
+    check('skip link is the first element in the body', document.body.firstElementChild === skip);
+    check('skip link points at main', !!skip && skip.getAttribute('href') === '#main');
+    check('skip link text', !!skip && skip.textContent.trim() === 'Skip to main content');
+    check('main has id="main"', document.querySelector('main').getAttribute('id') === 'main');
+    const navDel = document.getElementById('nav-del');
+    const navM = document.getElementById('nav-matches');
+    check('nav items are links, not buttons', navDel.tagName === 'A' && navM.tagName === 'A');
+    check('nav links have real hrefs', navDel.getAttribute('href') === '#del' && navM.getAttribute('href') === '#ranking');
+    check('nav links carry data-view', navDel.getAttribute('data-view') === 'del' && navM.getAttribute('data-view') === 'ranking');
+    check('current link has aria-current="page" on load', navDel.getAttribute('aria-current') === 'page' && navM.getAttribute('aria-current') === null);
+    check('nav list is a <ul>', document.getElementById('views-list').tagName === 'UL');
+    // view switching
+    navM.click();
+    check('clicking Match ranking shows the ranking view', document.getElementById('view-matches').hidden === false && document.getElementById('view-del').hidden === true);
+    check('aria-current moves to Match ranking', navM.getAttribute('aria-current') === 'page' && navDel.getAttribute('aria-current') === null);
+    check('URL hash follows the view', window.location.hash === '#ranking', window.location.hash);
+    navDel.click();
+    check('clicking DEL generator shows the DEL view', document.getElementById('view-del').hidden === false && document.getElementById('view-matches').hidden === true);
+    check('aria-current moves back to DEL generator', navDel.getAttribute('aria-current') === 'page' && navM.getAttribute('aria-current') === null);
+    check('URL hash follows back', window.location.hash === '#del', window.location.hash);
+    // hashchange: pasted URL / back-forward
+    window.location.hash = '#ranking';
+    window.dispatchEvent(new window.Event('hashchange'));
+    check('hashchange to #ranking shows the ranking view', document.getElementById('view-matches').hidden === false && navM.getAttribute('aria-current') === 'page');
+    window.location.hash = '#del';
+    window.dispatchEvent(new window.Event('hashchange'));
+    check('hashchange to #del shows the DEL view', document.getElementById('view-del').hidden === false && navDel.getAttribute('aria-current') === 'page');
+    // disclosure menu
+    const menuBtn = document.getElementById('menu-toggle');
+    const nav = document.getElementById('views-nav');
+    check('Menu button exists', !!menuBtn);
+    check('Menu button starts collapsed', menuBtn.getAttribute('aria-expanded') === 'false' && !nav.classList.contains('open'));
+    check('Menu button controls the link list', menuBtn.getAttribute('aria-controls') === 'views-list');
+    menuBtn.click();
+    check('Menu button opens the menu', menuBtn.getAttribute('aria-expanded') === 'true' && nav.classList.contains('open'));
+    navM.click();
+    check('clicking a link closes the menu', menuBtn.getAttribute('aria-expanded') === 'false' && !nav.classList.contains('open'));
+    menuBtn.click();
+    check('Menu button opens the menu again', nav.classList.contains('open'));
+    navM.focus();
+    document.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Escape' }));
+    check('Escape closes the menu', menuBtn.getAttribute('aria-expanded') === 'false' && !nav.classList.contains('open'));
+    check('Escape returns focus to the Menu button', document.activeElement === menuBtn);
+    // CSS rules: nav bar style + 640px disclosure breakpoint
+    const media640 = mediaRules(document, '640');
+    check('640px disclosure breakpoint exists', !!media640);
+    check('Menu button shows at 640px', !!media640 && ruleText(media640, '.menu-toggle').indexOf('inline-flex') !== -1);
+    check('link list hides at 640px until opened', !!media640 && ruleText(media640, '.views-list').indexOf('none') !== -1);
+    check('current link has a 3px bottom border', (cssRule(document, '.nav-link[aria-current="page"]') || { style: { borderBottom: '' } }).style.borderBottom.indexOf('3px') !== -1);
+    check('nav links are 44px targets', (cssRule(document, '.nav-link') || { style: { minHeight: '' } }).style.minHeight === '44px');
+  } catch (e) {
+    check('no exception during HeaderNav browser test', false, e.message);
   }
 
   try {
